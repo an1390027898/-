@@ -327,6 +327,12 @@
 /* v7: calendar meta hidden (only show count badge) */
 .calMeta:empty{ display:none !important; }
 
+
+/* v8: move calendar count badge lower to avoid overlapping the date number */
+@media (max-width:980px){
+  .calBadge{ top:30px !important; right:10px !important; }
+}
+
 </style>
 </head>
 <body>
