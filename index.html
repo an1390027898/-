@@ -333,6 +333,68 @@
   .calBadge{ top:30px !important; right:10px !important; }
 }
 
+
+/* v9: library */
+.chiprow{display:flex; gap:8px; flex-wrap:wrap;}
+.chip{padding:8px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.03); font-weight:900; font-size:12px; cursor:pointer; user-select:none;}
+.chip.active{background:rgba(99,102,241,.18); border-color:rgba(99,102,241,.38); color:#fff;}
+.libGrid{display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;}
+@media (min-width:821px){ .libGrid{ grid-template-columns: repeat(3, 1fr);} }
+.libItem{border-radius:16px;}
+.libThumb{width:100%; aspect-ratio: 16/9; border-radius:14px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; font-weight:900; opacity:.75;}
+
+
+/* ================================
+   v11: stable navigation + filters + print panel
+   ================================ */
+.typeChips{
+  display:flex;
+  gap:8px;
+  flex-wrap: nowrap !important;
+  overflow-x:auto !important;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 6px;
+}
+.typeChips::-webkit-scrollbar{ height: 6px; }
+.typeChips::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.10); border-radius: 999px; }
+.typeChip{ white-space:nowrap; flex:0 0 auto; }
+
+/* clients filter bar */
+.clientsFilterBar{
+  margin-top:10px;
+  padding:10px;
+  border-radius:16px;
+  border:1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.03);
+}
+.filterRow{ display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+.filterPills{ display:flex; gap:8px; flex-wrap:wrap; }
+.pillBtn{
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+  font-weight:1000;
+  font-size:12px;
+  cursor:pointer;
+  color: rgba(255,255,255,.92);
+}
+.pillBtn.active{ background: rgba(99,102,241,.18); border-color: rgba(99,102,241,.38); color:#fff; }
+
+/* print panel modal */
+#printPanel .modalCard{ max-width: 520px; }
+.printOptions{ display:grid; gap:10px; margin-top:12px; }
+.printOpt{
+  padding:12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.03);
+  cursor:pointer;
+}
+.printOpt:hover{ background: rgba(255,255,255,.05); }
+.printOpt .t{ font-weight:1000; }
+.printOpt .d{ font-size:12px; opacity:.75; margin-top:4px; line-height:1.3; }
+
 </style>
 </head>
 <body>
@@ -356,7 +418,13 @@
       <button data-view="templates"><span class="ico">🧩</span>清单模板库 <span class="small">可编辑</span></button>
       <button data-view="deliver"><span class="ico">🎁</span>纪念交付包 <span class="small">交付</span></button>
       <button data-view="training"><span class="ico">🎓</span>服务体系训练营 <span class="small">内训</span></button>
-      <button data-view="settings"><span class="ico">⚙️</span>设置与备份 <span class="small">导入导出</span></button>
+      <button data-view="settings"><span class="ico">⚙️</span>
+    <button class="navItem" type="button" data-view="library">
+      <span class="ico">🖼️</span>
+      <span class="txt">资料库</span>
+      <span class="sub">展示</span>
+    </button>
+设置与备份 <span class="small">导入导出</span></button>
     </div>
 
     <div class="sep"></div>
@@ -375,12 +443,31 @@
         <span class="pill" id="currentClientPill">当前客户：未选择</span>
       </div>
       <div class="row">
+        <button class="btn" data-action="profileOpen">👤 <span id="profileNamePill">安宁</span></button>
+
         <button class="btn" data-action="print">🖨 打印当前页</button>
         </div>
     </div>
 
     <!-- Views -->
     <section id="view-dashboard" class="grid cols3">
+
+      <div class="card" id="homeHero" style="grid-column:1/-1;">
+        <div class="bd" style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
+          <div style="display:flex; gap:12px; align-items:center;">
+            <div id="homeAvatar" style="width:52px;height:52px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:900;">AN</div>
+            <div>
+              <div style="font-size:18px;font-weight:900;">HI，<span id="homeName">安宁</span></div>
+              <div class="small muted">今年单量 / 本月单量 / 收款与客户类型统计，会随你录入的信息自动变化</div>
+            </div>
+          </div>
+          <div class="row" style="gap:10px;">
+            <button class="btn" data-action="goto" data-view="schedule">📅 去档期</button>
+            <button class="btn" data-action="goto" data-view="clients">👤 去客户</button>
+          </div>
+        </div>
+      </div>
+
       <div class="card">
         <div class="hd"><h2>客户总览</h2><span class="pill" id="kpiActive">进行中</span></div>
         <div class="bd">
@@ -469,6 +556,17 @@
               <button class="btn" data-action="export">⬇ 导出</button>
               <button class="btn" data-action="import">⬆ 导入</button>
             </div>
+  <div class="clientsFilterBar" id="clientsFilterBar">
+    <div class="filterRow">
+      <div style="font-weight:1000;">筛选</div>
+      <div class="filterPills">
+        <button class="pillBtn" type="button" id="pillUnpaid">待收款</button>
+        <button class="pillBtn" type="button" id="pillReset">重置</button>
+      </div>
+    </div>
+    <div class="typeChips" id="clientsTypeChips" style="margin-top:10px;"></div>
+  </div>
+
           </div>
           <div class="bd">
             <div id="clientList"></div>
@@ -481,6 +579,19 @@
             <div class="formgrid">
               <div><label>客户姓名</label><input id="fName" placeholder="如：张三 & 李四"/></div>
               <div><label>档期日期</label><input id="fDate" type="date"/></div>
+              <div>
+                <label>客户类型</label>
+                <select id="fEventType">
+                  <option value="婚礼">婚礼</option>
+                  <option value="订婚宴">订婚宴</option>
+                  <option value="百日宴">百日宴</option>
+                  <option value="周岁生日宴">周岁生日宴</option>
+                  <option value="十周岁生日宴">十周岁生日宴</option>
+                  <option value="寿宴">寿宴</option>
+                  <option value="其他宴会">其他宴会</option>
+                </select>
+              </div>
+
               <div><label>电话</label><input id="fPhone" placeholder=""/></div>
               <div><label>微信</label><input id="fWechat" placeholder=""/></div>
               <div><label>城市 / 酒店</label><input id="fCity" placeholder=""/></div>
@@ -500,9 +611,20 @@
             <div class="formgrid">
               <div><label>套餐 / 服务范围</label><input id="fPackage" placeholder="如：全案策划 / 轻策划 / 司仪统筹等"/></div>
               <div><label>预算区间</label><input id="fBudget" placeholder="如：3-5W"/></div>
+              <div><label>业绩总额（元）</label><input id="fTotalAmount" placeholder="如：38800"/></div>
+              <div><label>已收款（元）</label><input id="fPaidAmount" placeholder="如：20000"/></div>
+
             </div>
 
-            <div style="margin-top:12px">
+            
+            <div class="sep"></div>
+            <div class="formgrid">
+              <div><label>下一次重大事件（名称）</label><input id="fNextEventName" placeholder="如：一周年 / 二宝百日 / 父母寿宴"/></div>
+              <div><label>下一次重大事件（日期）</label><input id="fNextEventDate" type="date"/></div>
+              <div><label>提前提醒（天）</label><input id="fRemindDays" type="number" min="0" step="1" placeholder="30"/></div>
+            </div>
+
+<div style="margin-top:12px">
               <label>备注（可写：风格偏好 / 家庭关系 / 特殊安排 / 风险点）</label>
               <textarea id="fNotes" placeholder="建议用：背景-诉求-限制-决策人-风险-下一步"></textarea>
             </div>
@@ -753,7 +875,22 @@
 
 
 
-  </main>
+  
+<section id="view-library" class="hidden">
+  <div class="hd">
+    <h2>资料库</h2>
+    <div class="row" style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+      <div class="typeChips" id="libCats"></div>
+      <button class="btn primary" data-action="libAdd">＋ 添加案例</button>
+    </div>
+  </div>
+  <div class="libGrid" id="libGrid"></div>
+  <div class="card" id="libEmpty" style="margin-top:12px; display:none;">
+    <div class="muted">暂无资料。点击「添加案例」上传图片/视频链接/图文介绍。</div>
+  </div>
+</section>
+
+</main>
 </div>
 
 
@@ -802,9 +939,10 @@
   const DEFAULT_TEMPLATES = JSON.parse($('#templatesData').textContent || '{}');
 
   const defaultState = {
-    settings: { theme:'dark', brandName:'叙述婚礼｜服务交付' },
+    settings: { theme:'dark', brandName:'叙述婚礼｜服务交付', profileName:'安宁', avatarUrl:'', teamMode:'local' },
     templates: DEFAULT_TEMPLATES,
     clients: [],
+    library: [],
     currentClientId: null
   };
 
@@ -820,6 +958,7 @@
         settings: {...defaultState.settings, ...(s.settings||{})},
         templates: s.templates && Object.keys(s.templates).length ? s.templates : structuredClone(DEFAULT_TEMPLATES),
         clients: Array.isArray(s.clients)? s.clients : [],
+        library: Array.isArray(s.library)? s.library : [],
       };
     }catch(e){
       console.error(e);
@@ -1002,13 +1141,55 @@
     $('#clientFormTitle').textContent = '编辑客户：' + (c.name||'');
     $('#fName').value = c.name||'';
     $('#fDate').value = c.date||'';
+    $('#fEventType').value = c.eventType || '婚礼';
     $('#fPhone').value = c.phone||'';
     $('#fWechat').value = c.wechat||'';
     $('#fCity').value = c.city||'';
     $('#fStatus').value = c.status||'in_progress';
     $('#fPackage').value = c.package||'';
     $('#fBudget').value = c.budget||'';
+    $('#fTotalAmount').value = (c.totalAmount ?? '') + '';
+    $('#fPaidAmount').value = (c.paidAmount ?? '') + '';
+    $('#fNextEventName').value = c.nextEventName||'';
+    $('#fNextEventDate').value = c.nextEventDate||'';
+    $('#fRemindDays').value = (c.remindDays ?? 30) + '';
     $('#fNotes').value = c.notes||'';
+  }
+
+  function saveClientFromForm(){
+    const obj = {
+      id: editingClientId || uid(),
+      name: $('#fName').value.trim() || '未命名客户',
+      date: $('#fDate').value || '',
+      eventType: $('#fEventType').value || '婚礼',
+      phone: $('#fPhone').value.trim() || '',
+      wechat: $('#fWechat').value.trim() || '',
+      city: $('#fCity').value.trim() || '',
+      status: $('#fStatus').value || 'in_progress',
+      package: $('#fPackage').value.trim() || '',
+      budget: $('#fBudget').value.trim() || '',
+      totalAmount: Number($('#fTotalAmount').value || 0) || 0,
+      paidAmount: Number($('#fPaidAmount').value || 0) || 0,
+      nextEventName: $('#fNextEventName').value.trim() || '',
+      nextEventDate: $('#fNextEventDate').value || '',
+      remindDays: Number($('#fRemindDays').value || 30) || 30,
+      notes: $('#fNotes').value || '',
+      updatedAt: new Date().toISOString(),
+    };
+    const old = getClient(obj.id);
+    if(old){
+      Object.assign(old, obj);
+    }else{
+      obj.createdAt = new Date().toISOString();
+      obj.checklists = {};
+      obj.brief = { conclusion:'', risks:'' };
+      obj.deliver = { text:'' };
+      state.clients.push(obj);
+    }
+    save();
+    toast('已保存', '客户信息已更新。');
+    renderAll();
+    return obj.id;
   }
 
   function saveClientFromForm(){
@@ -2132,14 +2313,14 @@
     save();
   }
   renderAll();
-  showView('schedule');
+  showView('dashboard');
 })();
 </script>
 <script>
 
 (function(){
   const tabBtns = Array.from(document.querySelectorAll('.bottomTabs .tabBtn'));
-  function tabToView(tab){ return ({schedule:'schedule',clients:'clients',execute:'client',templates:'templates',me:'me'}[tab]||'schedule'); }
+  function tabToView(tab){ return ({home:'dashboard',schedule:'schedule',clients:'clients',library:'library',me:'me'}[tab]||'dashboard'); }[tab]||'schedule'); }
   function syncTabs(activeView){
     tabBtns.forEach(btn=>{
       const v = tabToView(btn.dataset.tab);
@@ -2153,6 +2334,8 @@
       syncTabs(v);
     });
   });
+
+    try{ syncTabs('dashboard'); }catch(e){}
 
   // Patch showView to sync tabs + enhance schedule toolbar
   if(typeof window.showView==='function' && !window.__showViewPatchedV4){
@@ -2289,15 +2472,18 @@
 </script>
 
 <!-- Mobile Bottom Tabs (v6) -->
+
+<!-- Bottom Tabs v9 -->
 <nav class="bottomTabs" aria-label="底部导航">
   <div class="tabs">
+    <button class="tabBtn" type="button" data-tab="home"><div>🏠</div><small>首页</small></button>
     <button class="tabBtn" type="button" data-tab="schedule"><div>📅</div><small>档期</small></button>
     <button class="tabBtn" type="button" data-tab="clients"><div>👤</div><small>客户</small></button>
-    <button class="tabBtn" type="button" data-tab="execute"><div>✅</div><small>执行</small></button>
-    <button class="tabBtn" type="button" data-tab="templates"><div>📚</div><small>模板库</small></button>
+    <button class="tabBtn" type="button" data-tab="library"><div>🖼️</div><small>资料库</small></button>
     <button class="tabBtn" type="button" data-tab="me"><div>⚙️</div><small>我的</small></button>
   </div>
 </nav>
+
 
 <script>
 
@@ -2467,6 +2653,693 @@
   }, true);
 
   setTimeout(sync, 120);
+})();
+
+</script>
+
+  <div class="modal hidden" id="profileModal">
+    <div class="modalCard">
+      <div class="h2">个人设置</div>
+      <div class="small muted" style="margin-top:6px;">修改头像与名称（本地保存）。团队版上线后可扩展权限与账号。</div>
+
+      <div style="display:flex; gap:12px; margin-top:12px; align-items:center;">
+        <div id="profileAvatarPreview" style="width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:900;">AN</div>
+        <div style="flex:1">
+          <label>头像（图片URL，可先留空）</label>
+          <input id="profileAvatarUrl" placeholder="https://..."/>
+        </div>
+      </div>
+
+      <div style="margin-top:10px;">
+        <label>名称</label>
+        <input id="profileName" placeholder="例如：安宁"/>
+      </div>
+
+      <div class="row" style="justify-content:flex-end;margin-top:12px;">
+        <button class="btn" data-action="profileCancel">取消</button>
+        <button class="btn primary" data-action="profileSave">保存</button>
+      </div>
+    </div>
+  </div>
+
+
+<script>
+/* ================================
+   v9: profile+library + home KPI extras
+   ================================ */
+(function(){
+  if(window.__v9Loaded) return;
+  window.__v9Loaded = true;
+
+  const $ = window.$ || ((s)=>document.querySelector(s));
+  const $$ = window.$$ || ((s)=>Array.from(document.querySelectorAll(s)));
+
+  function safeNum(v){ const n = Number(v); return isNaN(n)?0:n; }
+
+  // ---- Profile (stored in state.settings) ----
+  function profile(){
+    return {
+      name: (state.settings.profileName || '安宁'),
+      avatarUrl: (state.settings.avatarUrl || '')
+    };
+  }
+  function renderProfile(){
+    const p = profile();
+    const namePill = document.getElementById('profileNamePill');
+    if(namePill) namePill.textContent = p.name;
+    const homeName = document.getElementById('homeName');
+    if(homeName) homeName.textContent = p.name;
+
+    const homeAvatar = document.getElementById('homeAvatar');
+    const prev = document.getElementById('profileAvatarPreview');
+    [homeAvatar, prev].forEach(el=>{
+      if(!el) return;
+      if(p.avatarUrl){
+        el.innerHTML = '<img src="'+p.avatarUrl+'" style="width:100%;height:100%;object-fit:cover"/>';
+      }else{
+        el.textContent = (p.name||'AN').slice(0,2).toUpperCase();
+      }
+    });
+  }
+  function openProfile(){
+    const p = profile();
+    document.getElementById('profileModal')?.classList.remove('hidden');
+    const url = document.getElementById('profileAvatarUrl');
+    const name = document.getElementById('profileName');
+    if(url) url.value = p.avatarUrl;
+    if(name) name.value = p.name;
+    renderProfile();
+  }
+  function closeProfile(){ document.getElementById('profileModal')?.classList.add('hidden'); }
+  function saveProfile(){
+    const url = (document.getElementById('profileAvatarUrl')?.value || '').trim();
+    const name = (document.getElementById('profileName')?.value || '').trim() || '安宁';
+    state.settings.profileName = name;
+    state.settings.avatarUrl = url;
+    save();
+    closeProfile();
+    renderProfile();
+    if(typeof toast==='function') toast('已保存','个人信息已更新。');
+  }
+
+  // Ensure entry in 我的
+  const me = document.getElementById('view-me');
+  if(me && !me.querySelector('[data-action="profileOpen"]')){
+    const wrap = me.querySelector('.bd') || me;
+    const btn = document.createElement('button');
+    btn.className = 'btn';
+    btn.dataset.action = 'profileOpen';
+    btn.textContent = '👤 个人设置（头像/名称）';
+    btn.style.marginTop = '10px';
+    wrap.appendChild(btn);
+  }
+
+  // ---- Dashboard KPI extras ----
+  function monthKey(dateStr){
+    const d = new Date(dateStr);
+    if(isNaN(d)) return '';
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  }
+  function yearKey(dateStr){
+    const d = new Date(dateStr);
+    if(isNaN(d)) return '';
+    return String(d.getFullYear());
+  }
+  function renderDashboardExtras(){
+    const now = new Date();
+    const ym = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+    const y = String(now.getFullYear());
+
+    const yearOrders = (state.clients||[]).filter(c=> yearKey(c.date)===y).length;
+    const paid = (state.clients||[]).reduce((s,c)=> s + safeNum(c.paidAmount||0), 0);
+    const rev  = (state.clients||[]).reduce((s,c)=> s + safeNum(c.totalAmount||0), 0);
+
+    const elY = document.getElementById('kpiYearOrders');
+    const elP = document.getElementById('kpiPaid');
+    const elR = document.getElementById('kpiRevenue');
+    if(elY) elY.textContent = yearOrders;
+    if(elP) elP.textContent = Math.round(paid);
+    if(elR) elR.textContent = Math.round(rev);
+  }
+
+  // ---- Library (stored in state.library) ----
+  const LIB_CATS = ['全部','主持人','化妆师','婚礼管家','摄影摄像/跟拍团队'];
+  let libCat = '全部';
+  let libEditingId = null;
+
+  function libItems(){
+    state.library = Array.isArray(state.library) ? state.library : [];
+    return state.library;
+  }
+  function renderLibCats(){
+    const wrap = document.getElementById('libCats');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    LIB_CATS.forEach(c=>{
+      const chip = document.createElement('div');
+      chip.className = 'chip' + (c===libCat?' active':'');
+      chip.textContent = c;
+      chip.onclick = ()=>{ libCat=c; renderLibrary(); };
+      wrap.appendChild(chip);
+    });
+  }
+  function renderLibrary(){
+    renderLibCats();
+    const grid = document.getElementById('libGrid');
+    const empty = document.getElementById('libEmpty');
+    if(!grid) return;
+
+    const arr = libItems().slice().filter(it=> libCat==='全部' ? true : it.cat===libCat);
+    grid.innerHTML = '';
+    if(empty) empty.style.display = arr.length ? 'none' : 'block';
+
+    arr.forEach(it=>{
+      const card = document.createElement('div');
+      card.className = 'card libItem';
+      const thumb = it.cover ? `<img src="${it.cover}" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.08)"/>`
+                             : `<div class="libThumb">${it.cat}</div>`;
+      card.innerHTML = `
+        <div class="bd">
+          ${thumb}
+          <div style="font-weight:900;margin-top:10px;">${escapeHtml(it.name||'未命名')}</div>
+          <div class="small muted" style="margin-top:4px;">${escapeHtml(it.cat||'')}</div>
+          <div class="row" style="margin-top:10px;">
+            ${it.video? `<a class="btn" href="${it.video}" target="_blank">🎬 播放</a>`:''}
+            <button class="btn" data-lib="edit" data-id="${it.id}">编辑</button>
+            <button class="btn danger" data-lib="del" data-id="${it.id}">删除</button>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function openLib(editItem){
+    document.getElementById('libModal')?.classList.remove('hidden');
+    const sel = document.getElementById('libFieldCat');
+    if(sel){
+      sel.innerHTML = '';
+      LIB_CATS.filter(x=>x!=='全部').forEach(c=>{
+        const o = document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o);
+      });
+    }
+    document.getElementById('libModalTitle').textContent = editItem ? '编辑案例' : '添加案例';
+    libEditingId = editItem ? editItem.id : null;
+    document.getElementById('libFieldCat').value = editItem?.cat || '主持人';
+    document.getElementById('libFieldName').value = editItem?.name || '';
+    document.getElementById('libFieldCover').value = editItem?.cover || '';
+    document.getElementById('libFieldVideo').value = editItem?.video || '';
+    document.getElementById('libFieldDesc').value = editItem?.desc || '';
+  }
+  function closeLib(){ document.getElementById('libModal')?.classList.add('hidden'); libEditingId=null; }
+  function saveLib(){
+    const cat = document.getElementById('libFieldCat').value;
+    const name = (document.getElementById('libFieldName').value||'').trim() || '未命名';
+    const cover = (document.getElementById('libFieldCover').value||'').trim();
+    const video = (document.getElementById('libFieldVideo').value||'').trim();
+    const desc = (document.getElementById('libFieldDesc').value||'').trim();
+    const arr = libItems();
+    const id = libEditingId || ('L'+Math.random().toString(36).slice(2,9));
+    const item = { id, cat, name, cover, video, desc, updatedAt: new Date().toISOString() };
+    const idx = arr.findIndex(x=>x.id===id);
+    if(idx>=0) arr[idx]=item; else arr.unshift(item);
+    state.library = arr;
+    save();
+    closeLib();
+    renderLibrary();
+    if(typeof toast==='function') toast('已保存','资料库已更新。');
+  }
+  function delLib(id){
+    state.library = libItems().filter(x=>x.id!==id);
+    save();
+    renderLibrary();
+    if(typeof toast==='function') toast('已删除','资料已移除。');
+  }
+
+  // ---- Actions ----
+  document.addEventListener('click', (e)=>{
+    const a = e.target.closest('[data-action]');
+    if(a){
+      if(a.dataset.action==='profileOpen') return openProfile();
+      if(a.dataset.action==='profileCancel') return closeProfile();
+      if(a.dataset.action==='profileSave') return saveProfile();
+      if(a.dataset.action==='libAdd') return openLib(null);
+      if(a.dataset.action==='libCancel') return closeLib();
+      if(a.dataset.action==='libSave') return saveLib();
+    }
+    const l = e.target.closest('[data-lib]');
+    if(l){
+      const id = l.dataset.id;
+      const action = l.dataset.lib;
+      const it = libItems().find(x=>x.id===id);
+      if(action==='edit') return openLib(it);
+      if(action==='del'){ if(confirm('确定删除该资料？')) delLib(id); }
+    }
+  }, true);
+
+  // Wrap renderAll to inject extras
+  if(typeof window.renderAll==='function' && !window.__renderAllV9){
+    window.__renderAllV9 = true;
+    const __orig = window.renderAll;
+    window.renderAll = function(){
+      const r = __orig();
+      try{ renderProfile(); }catch(e){}
+      try{ renderDashboardExtras(); }catch(e){}
+      try{ renderLibrary(); }catch(e){}
+      return r;
+    }
+  }
+
+  // Fix deliver link mismatch if any other places
+  // (Already patched in html, but keep safe)
+  // ---- Init ----
+  setTimeout(()=>{ try{ renderProfile(); renderDashboardExtras(); }catch(e){} }, 80);
+})();
+</script>
+
+
+<div class="modal hidden" id="printPanel">
+  <div class="modalCard">
+    <div class="h2">选择打印内容</div>
+    <div class="muted" style="margin-top:6px;">用于现场对接与后期交接。你可以先选择打印范围。</div>
+
+    <div class="printOptions">
+      <div class="printOpt" data-print="current">
+        <div class="t">打印当前页</div>
+        <div class="d">适合快速打印当前看到的页面。</div>
+      </div>
+      <div class="printOpt" data-print="today">
+        <div class="t">打印今日执行单</div>
+        <div class="d">按今天档期汇总：客户信息 + 今日执行清单。</div>
+      </div>
+      <div class="printOpt" data-print="clientAll">
+        <div class="t">打印该客户所有清单集合</div>
+        <div class="d">包含该客户的全部模板清单（可用于交接）。</div>
+      </div>
+    </div>
+
+    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:12px;">
+      <button class="btn" type="button" id="printClose">取消</button>
+    </div>
+  </div>
+</div>
+
+<script>
+
+/* ================================
+   v11 Stable Core: views mapping + KPI/Type click linkage + Clients filters + Print panel
+   ================================ */
+(function(){
+  if(window.__v11StableLoaded) return;
+  window.__v11StableLoaded = true;
+
+  // ====== Constants ======
+  const EVENT_TYPES = ['婚礼','订婚宴','百日宴','周岁生日宴','十周岁生日宴','寿宴','其他宴会'];
+
+  // ====== Storage helpers ======
+  function readJSON(key, fallback){
+    try{ return JSON.parse(localStorage.getItem(key) || ''); }catch(e){ return fallback; }
+  }
+
+  // ====== Data getters (compat) ======
+  function getClients(){
+    // prefer existing global if present
+    if(Array.isArray(window.clients)) return window.clients;
+    const v = readJSON('nw_clients_v1', []);
+    return Array.isArray(v)? v: [];
+  }
+  function getSchedules(){
+    if(Array.isArray(window.schedules)) return window.schedules;
+    const v = readJSON('nw_schedules_v1', []);
+    return Array.isArray(v)? v: [];
+  }
+  function monthKey(d){
+    const dt = new Date(d);
+    if(isNaN(dt)) return '';
+    return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');
+  }
+  function nowMonth(){
+    const dt = new Date();
+    return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');
+  }
+  function nowYear(){ return new Date().getFullYear(); }
+
+  // money fields compatibility
+  function sumMoney(clients, keys){
+    let s = 0;
+    clients.forEach(c=>{
+      for(const k of keys){
+        if(c && c[k] != null){
+          const v = Number(c[k]);
+          if(!isNaN(v)){ s += v; break; }
+        }
+      }
+    });
+    return Math.round(s);
+  }
+
+  // ====== View mapping ======
+  const viewMap = {
+    home: 'dashboard',
+    dashboard: 'dashboard',
+    schedule: 'schedule',
+    clients: 'clients',
+    library: 'library',
+    me: 'me',
+    templates: 'templates',
+    deliver: 'deliver',
+    training: 'training',
+    settings: 'settings',
+    exec: 'exec'
+  };
+
+  function show(v){
+    const vv = viewMap[v] || v;
+    if(typeof window.showView === 'function'){
+      // call original if exists
+      window.showView(vv);
+    }else{
+      document.querySelectorAll('main section[id^="view-"]').forEach(s=>s.classList.add('hidden'));
+      document.getElementById('view-'+vv)?.classList.remove('hidden');
+    }
+    // after show hooks
+    setTimeout(()=>{
+      if(vv==='dashboard') renderHomeKPIs();
+      if(vv==='clients') renderClientsFilters();
+      if(vv==='library' && typeof window.renderLibrary==='function') window.renderLibrary();
+      syncNavActive(vv);
+    }, 0);
+  }
+
+  // ====== Sync active UI for bottom tabs & sidebar ======
+  function syncNavActive(active){
+    // bottom tabs
+    document.querySelectorAll('.bottomTabs .tabBtn').forEach(btn=>{
+      const t = btn.dataset.tab;
+      const vv = viewMap[t] || t;
+      btn.classList.toggle('active', vv===active);
+    });
+    // sidebar items (data-view)
+    document.querySelectorAll('[data-view]').forEach(el=>{
+      const vv = viewMap[el.dataset.view] || el.dataset.view;
+      el.classList.toggle('active', vv===active);
+    });
+  }
+
+  // ====== Home KPIs ======
+  function renderHomeKPIs(){
+    const clients = getClients();
+    const schedules = getSchedules();
+    const m = nowMonth();
+    const y = nowYear();
+
+    const yearOrders = schedules.filter(s=>{
+      const k = monthKey(s.date || s.day || s.start || s.weddingDate);
+      return k && k.startsWith(String(y));
+    }).length;
+
+    const monthOrders = schedules.filter(s=>{
+      const k = monthKey(s.date || s.day || s.start || s.weddingDate);
+      return k === m;
+    }).length;
+
+    const paid = sumMoney(clients, ['paidAmount','paid','received','receivedAmount']);
+    const total = sumMoney(clients, ['totalAmount','total','contractAmount','amount','orderAmount']);
+    const unpaid = Math.max(total - paid, 0);
+
+    const setText=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=String(v); };
+    setText('kpiYearOrders', yearOrders);
+    setText('kpiMonthOrders', monthOrders);
+    setText('kpiPaid', paid);
+    setText('kpiUnpaid', unpaid);
+
+    // Build home type chips (click -> clients filter)
+    const chips = document.getElementById('homeTypeChips');
+    if(chips){
+      chips.innerHTML = '';
+      EVENT_TYPES.forEach(t=>{
+        const n = clients.filter(c => (c.eventType||c.type||'婚礼')===t).length;
+        const chip = document.createElement('div');
+        chip.className = 'typeChip';
+        chip.textContent = t + ' · ' + n;
+        chip.onclick = ()=>{ setClientTypeFilter(t); show('clients'); };
+        chips.appendChild(chip);
+      });
+    }
+  }
+
+  // ====== Clients filters ======
+  function setClientTypeFilter(type){
+    window.__clientTypeFilter = type || '全部';
+    window.__clientUnpaidOnly = false;
+  }
+  function setClientUnpaidOnly(on){
+    window.__clientUnpaidOnly = !!on;
+  }
+
+  function buildClientsTypeChips(){
+    const wrap = document.getElementById('clientsTypeChips');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+
+    const mk = (label)=>{
+      const chip = document.createElement('div');
+      chip.className = 'typeChip' + ((window.__clientTypeFilter||'全部')===label ? ' active':'');
+      chip.textContent = label;
+      chip.onclick = ()=>{
+        window.__clientTypeFilter = label;
+        // unpaid filter remains as-is unless reset
+        renderClientsFilters(true);
+        // trigger existing list render if present
+        if(typeof window.renderClients==='function') window.renderClients();
+        if(typeof window.renderClientList==='function') window.renderClientList();
+      };
+      return chip;
+    };
+
+    wrap.appendChild(mk('全部'));
+    EVENT_TYPES.forEach(t=>wrap.appendChild(mk(t)));
+  }
+
+  function renderClientsFilters(onlyUI){
+    // pills
+    const unpaidBtn = document.getElementById('pillUnpaid');
+    const resetBtn = document.getElementById('pillReset');
+
+    if(unpaidBtn){
+      unpaidBtn.classList.toggle('active', !!window.__clientUnpaidOnly);
+      unpaidBtn.onclick = ()=>{
+        window.__clientUnpaidOnly = !window.__clientUnpaidOnly;
+        renderClientsFilters(true);
+        if(typeof window.renderClients==='function') window.renderClients();
+        if(typeof window.renderClientList==='function') window.renderClientList();
+      };
+    }
+    if(resetBtn){
+      resetBtn.onclick = ()=>{
+        window.__clientTypeFilter = '全部';
+        window.__clientUnpaidOnly = false;
+        renderClientsFilters(true);
+        if(typeof window.renderClients==='function') window.renderClients();
+        if(typeof window.renderClientList==='function') window.renderClientList();
+      };
+    }
+
+    buildClientsTypeChips();
+
+    if(onlyUI) return;
+
+    // If the app already has its own client render, we just keep UI state.
+  }
+
+  // ====== Patch existing client renderer (if present) to apply filters ======
+  function computeClientAmounts(c){
+    const paid = Number(c.paidAmount ?? c.paid ?? c.received ?? c.receivedAmount ?? 0) || 0;
+    const total = Number(c.totalAmount ?? c.total ?? c.contractAmount ?? c.amount ?? c.orderAmount ?? 0) || 0;
+    return { paid, total, unpaid: Math.max(total - paid, 0) };
+  }
+
+  function filterClientsList(list){
+    let res = Array.isArray(list)? list.slice(): [];
+    const type = window.__clientTypeFilter || '全部';
+    const unpaidOnly = !!window.__clientUnpaidOnly;
+
+    if(type !== '全部'){
+      res = res.filter(c => (c.eventType||c.type||'婚礼') === type);
+    }
+    if(unpaidOnly){
+      res = res.filter(c => computeClientAmounts(c).unpaid > 0);
+    }
+    return res;
+  }
+
+  // Wrap known render function names, best-effort
+  function wrapRenderer(fnName){
+    const fn = window[fnName];
+    if(typeof fn !== 'function') return;
+    if(fn.__v11Wrapped) return;
+    function wrapped(){
+      // If their renderer reads from window.clients, we can temporarily swap filtered list.
+      const original = window.clients;
+      try{
+        const base = getClients();
+        window.clients = filterClientsList(base);
+        return fn.apply(this, arguments);
+      }finally{
+        window.clients = original;
+      }
+    }
+    wrapped.__v11Wrapped = true;
+    window[fnName] = wrapped;
+  }
+  wrapRenderer('renderClients');
+  wrapRenderer('renderClientList');
+
+  // ====== KPI click linkage ======
+  document.addEventListener('click', (e)=>{
+    const k = e.target.closest('[data-action="kpi"]');
+    if(!k) return;
+    const type = k.dataset.kpi;
+
+    if(type==='monthOrders'){
+      // jump to schedule and focus on current month
+      window.__scheduleFocusMonth = nowMonth();
+      show('schedule');
+      // if there is a month switcher, attempt set/select:
+      setTimeout(()=>{
+        try{
+          const sel = document.querySelector('#scheduleMonth, #monthPicker, select[name="month"]');
+          if(sel){
+            sel.value = window.__scheduleFocusMonth;
+            sel.dispatchEvent(new Event('change', {bubbles:true}));
+          }
+        }catch(err){}
+      }, 50);
+      return;
+    }
+    if(type==='unpaid'){
+      window.__clientTypeFilter = '全部';
+      window.__clientUnpaidOnly = true;
+      show('clients');
+      return;
+    }
+    if(type==='paid'){
+      // optional: show clients and we could add a 'paid only' later; for now just go clients
+      window.__clientTypeFilter = '全部';
+      window.__clientUnpaidOnly = false;
+      show('clients');
+      return;
+    }
+    if(type==='yearOrders'){
+      window.__scheduleFocusYear = nowYear();
+      show('schedule');
+      return;
+    }
+  }, true);
+
+  // ====== Bottom tabs click (stable) ======
+  document.addEventListener('click', (e)=>{
+    const btn = e.target.closest('.bottomTabs .tabBtn');
+    if(!btn) return;
+    const tab = btn.dataset.tab;
+    if(!tab) return;
+    show(tab);
+  }, true);
+
+  // ====== Sidebar click (stable) ======
+  document.addEventListener('click', (e)=>{
+    const item = e.target.closest('[data-view]');
+    if(!item) return;
+    // avoid conflicts with other buttons
+    const v = item.dataset.view;
+    if(!v) return;
+    // ignore if not a navigation button-like element
+    if(item.classList.contains('tabBtn')) return;
+    // If it's inside bottom tabs we already handle above
+    if(item.closest('.bottomTabs')) return;
+
+    // If it looks like sidebar nav item, navigate
+    if(item.classList.contains('navItem') || item.closest('.sidebar') || item.closest('.sideNav')){
+      show(v);
+    }
+  }, true);
+
+  // ====== Print panel ======
+  function openPrintPanel(){
+    document.getElementById('printPanel')?.classList.remove('hidden');
+  }
+  function closePrintPanel(){
+    document.getElementById('printPanel')?.classList.add('hidden');
+  }
+
+  // Hook any existing print button
+  function attachPrintHooks(){
+    // any element with data-action="openPrint" or text contains 打印当前页
+    document.querySelectorAll('[data-action="openPrint"]').forEach(el=>{
+      el.onclick = (e)=>{ e.preventDefault(); openPrintPanel(); };
+    });
+    // fallback: buttons containing "打印当前页"
+    document.querySelectorAll('button, a').forEach(el=>{
+      const t = (el.textContent||'').trim();
+      if(t==='打印当前页' || t==='打印'){
+        el.addEventListener('click', (e)=>{ e.preventDefault(); openPrintPanel(); }, {once:true});
+      }
+    });
+  }
+
+  document.addEventListener('click', (e)=>{
+    const p = e.target.closest('#printPanel .printOpt');
+    if(p){
+      const mode = p.dataset.print;
+      closePrintPanel();
+      if(mode==='current'){
+        window.print();
+        return;
+      }
+      if(mode==='today'){
+        // best-effort: show schedule then print
+        window.__printMode = 'today';
+        show('schedule');
+        setTimeout(()=>{ window.print(); window.__printMode=null; }, 300);
+        return;
+      }
+      if(mode==='clientAll'){
+        // best-effort: if current client view exists, print it; else go clients.
+        window.__printMode = 'clientAll';
+        const clientView = document.getElementById('view-client');
+        if(clientView && !clientView.classList.contains('hidden')){
+          setTimeout(()=>{ window.print(); window.__printMode=null; }, 200);
+        }else{
+          show('clients');
+          setTimeout(()=>{ window.print(); window.__printMode=null; }, 350);
+        }
+        return;
+      }
+    }
+    if(e.target && e.target.id==='printClose'){ closePrintPanel(); }
+  }, true);
+
+  // ====== Ensure library categories fixed to 4 ======
+  // If v9 library exists, it may already have LIB_CATS. We'll override by setting __libCats.
+  window.__libCats = ['主持人','化妆师','婚礼管家','摄影摄像/跟拍团队'];
+
+  // ====== Init: start at dashboard (desktop) or home tab (mobile) ======
+  setTimeout(()=>{
+    attachPrintHooks();
+    // Determine currently visible view; if none, show dashboard
+    const sec = document.querySelector('main section[id^="view-"]:not(.hidden)');
+    if(!sec){
+      show('dashboard');
+    }else{
+      const active = sec.id.replace('view-','');
+      syncNavActive(active);
+      if(active==='dashboard') renderHomeKPIs();
+      if(active==='clients') renderClientsFilters();
+    }
+
+    // If library chips should be stable: set default cat to 全部
+    if(typeof window.__libCat==='undefined') window.__libCat = '全部';
+  }, 120);
 })();
 
 </script>
