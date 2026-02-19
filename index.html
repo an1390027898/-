@@ -90,7 +90,13 @@
     .grid{display:grid; gap:12px; margin-top:14px}
     .grid.cols2{grid-template-columns: 1fr 1fr}
     .grid.cols3{grid-template-columns: 1fr 1fr 1fr}
-    @media (max-width: 1100px){ .grid.cols3{grid-template-columns:1fr} .grid.cols2{grid-template-columns:1fr} }
+    .grid.cols4{grid-template-columns: 1fr 1fr 1fr 1fr}
+@media (max-width: 1100px){
+  .grid.cols3{grid-template-columns:1fr}
+  .grid.cols2{grid-template-columns:1fr}
+  .grid.cols4{grid-template-columns:1fr 1fr}
+}
+@media (max-width: 700px){ .grid.cols4{grid-template-columns:1fr} }
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%), var(--panel);
       border:1px solid var(--line); border-radius: var(--radius);
@@ -100,6 +106,19 @@
     .card .hd{padding:14px 14px 10px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:10px}
     .card .hd h2{margin:0; font-size:14px}
     .card .bd{padding:14px}
+.statCard{padding:16px 18px; cursor:pointer; transition: transform .12s ease, border-color .12s ease}
+.statCard:hover{transform: translateY(-2px); border-color: rgba(125,211,252,.35)}
+.statCard .statTop{display:flex; gap:10px; align-items:center}
+.statCard .ico{
+  width:28px; height:28px; display:grid; place-items:center;
+  border-radius:10px; border:1px solid var(--line); background: rgba(255,255,255,.03);
+  font-size:16px;
+}
+.statCard .title{font-weight:900; font-size:16px}
+.statCard .num{font-weight:950; font-size:44px; margin-top:16px; letter-spacing:.6px}
+.statCard .num.money{font-size:40px}
+.kpiLink{cursor:pointer; border-radius:12px; padding:8px 10px}
+.kpiLink:hover{border-color: rgba(125,211,252,.35); background: rgba(125,211,252,.06)}
     .kpi{display:flex; flex-direction:column; gap:6px}
     .kpi .v{font-size:22px; font-weight:800}
     .pill{
@@ -117,6 +136,8 @@
     textarea{min-height: 92px; resize: vertical}
     label{display:block; font-size:12px; color:var(--muted); margin:0 0 6px}
     .formgrid{display:grid; gap:12px; grid-template-columns: 1fr 1fr}
+.formgrid3{display:grid; gap:12px; grid-template-columns: 1fr 1fr 1fr}
+@media (max-width: 900px){ .formgrid3{grid-template-columns:1fr} }
     @media (max-width: 900px){ .formgrid{grid-template-columns:1fr} }
     .tableWrap{overflow:auto; border:1px solid var(--line); border-radius:14px}
     table{width:100%; border-collapse:collapse; min-width:720px; background: rgba(255,255,255,.02)}
@@ -220,181 +241,59 @@
       table{min-width:0}
     }
   
-/* ================================
-   Mobile UI v4: Bottom Tabs + Schedule Header Cleanup
-   ================================ */
-.bottomTabs{position:fixed;left:0;right:0;bottom:0;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:rgba(10,14,20,.92);backdrop-filter:blur(10px);border-top:1px solid rgba(255,255,255,.08);z-index:999;display:none;}
-.bottomTabs .tabs{display:grid;grid-template-columns: repeat(5, 1fr);gap:10px;max-width:860px;margin:0 auto;}
-.tabBtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 8px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);color:rgba(255,255,255,.88);font-weight:900;font-size:12px;user-select:none;-webkit-tap-highlight-color:transparent;}
-.tabBtn small{font-size:11px;font-weight:800;opacity:.86}
-.tabBtn.active{background:rgba(99,102,241,.18);border-color:rgba(99,102,241,.38);color:#fff;}
-@media (max-width:820px){body{padding-bottom:90px}.bottomTabs{display:block}.layout,.grid,.appGrid{grid-template-columns:1fr!important}[data-action="newClient"]{display:none!important}}
-.scheduleHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:4px 0 12px;}
-.scheduleHeader .left{display:flex;align-items:center;gap:10px;flex:1;min-width:240px;}
-.scheduleHeader .right{display:flex;align-items:center;gap:10px;}
-.seg{display:inline-flex;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);border-radius:14px;overflow:hidden;}
-.seg button{padding:10px 12px;border:none;background:transparent;color:rgba(255,255,255,.82);font-weight:900;font-size:12px;}
-.seg button.active{background:rgba(255,255,255,.09);color:#fff;}
-@media (max-width:820px){.scheduleHeader{position:sticky;top:56px;z-index:120;padding:10px 0 12px;background:linear-gradient(180deg,rgba(11,15,20,.94),rgba(11,15,20,.70));backdrop-filter:blur(10px);border-bottom:1px solid rgba(255,255,255,.06)}.scheduleHeader .left{width:100%;justify-content:space-between;min-width:100%}.scheduleHeader .right{width:100%;justify-content:space-between}}
+    /* --- 类型分布（宴会类型统计） --- */
+    .typeDistWrap{display:flex; align-items:center; gap:14px; flex-wrap:wrap;}
+    #typeDistChart{width:220px; height:220px; max-width:100%; border-radius:999px; background:rgba(255,255,255,.03);}
+    .typeDistLegend{flex:1; min-width:220px; display:flex; flex-direction:column; gap:10px;}
+    .typeLine{display:flex; align-items:center; gap:10px; cursor:pointer; user-select:none;}
+    .typeLine:hover{filter:brightness(1.06);}
+    .swatch{width:10px; height:10px; border-radius:4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.20);}
+    .typeLabel{flex:1; font-size:13px; color:var(--text); font-weight:700;}
+    .typeMeta{font-size:12px; color:var(--muted); white-space:nowrap;}
+    .typeBar{height:8px; background:rgba(255,255,255,.08); border-radius:999px; overflow:hidden; flex:1;}
+    .typeBar i{display:block; height:100%; width:0%; border-radius:999px;}
+    @media (max-width: 860px){
+      .typeDistLegend{min-width:unset; width:100%;}
+      #typeDistChart{width:200px; height:200px;}
+    }
 
+/* ===== Dashboard sizing + responsive improvements (v3) ===== */
+.grid.cols1{grid-template-columns:1fr}
 
-/* v5: Keep print page - mobile floating */
-.fabPrint{
-  position: fixed;
-  right: 14px;
-  bottom: calc(96px + env(safe-area-inset-bottom));
-  z-index: 1000;
-  display: none;
+/* Make the 3 dashboard cards feel the same size on desktop */
+.dash3{align-items:stretch}
+.dash3 > .card{display:flex; flex-direction:column; min-height: clamp(280px, 34vh, 360px)}
+.dash3 > .card > .bd{flex:1; display:flex; flex-direction:column}
+
+/* Type distribution: stable layout (chart + legend) */
+.typeDistWrap{
+  display:grid;
+  grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
+  gap:14px;
+  align-items:center;
 }
-.fabPrint .btn{
-  border-radius: 999px;
-  padding: 12px 14px;
-  box-shadow: 0 14px 30px rgba(0,0,0,.35);
+#typeDistChart{
+  width: min(240px, 42vw);
+  aspect-ratio: 1 / 1;
+  height: auto;
 }
-@media (max-width:820px){
-  .fabPrint{ display:block; }
-}
+.typeDistLegend{min-width:0; max-height:240px; overflow:auto; padding-right:6px}
 
-
-/* v5: Month orders compaction (KPI + chart/list clearer) */
-@media (max-width:820px){
-  /* shrink generic stat cards inside schedule view */
-  [data-view="schedule"] .stats, 
-  [data-view="schedule"] .kpis,
-  [data-view="schedule"] .kpiGrid{
-    display:grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap:10px !important;
-  }
-  [data-view="schedule"] .statCard,
-  [data-view="schedule"] .kpiCard,
-  [data-view="schedule"] .card.stat,
-  [data-view="schedule"] .card.kpi{
-    padding:12px !important;
-    border-radius:16px !important;
-  }
-  [data-view="schedule"] .statCard .num,
-  [data-view="schedule"] .kpiCard .num{
-    font-size:22px !important;
-    line-height:1.05 !important;
-  }
-  [data-view="schedule"] .statCard .label,
-  [data-view="schedule"] .kpiCard .label{
-    font-size:12px !important;
-    opacity:.85 !important;
-  }
-
-  /* clearer section blocks */
-  [data-view="schedule"] .monthSection{
-    margin-top:10px !important;
-    display:grid;
-    grid-template-columns: 1fr;
-    gap:10px;
-  }
-  [data-view="schedule"] .monthSection .card{
-    border-radius:16px !important;
-  }
-
-  /* compress tables/list */
-  [data-view="schedule"] table{
-    font-size:12px !important;
-  }
-  [data-view="schedule"] td, [data-view="schedule"] th{
-    padding:8px 10px !important;
-  }
+@media (max-width: 980px){
+  .dash3 > .card{min-height:auto}
+  .typeDistLegend{max-height:none}
 }
 
-
-/* v6: force bottom tabs visible on mobile, keep sidebar functional (off-canvas) */
-@media (max-width:980px){
-  .bottomTabs{display:block !important;}
-  body{padding-bottom: 94px;}
+/* Mobile: tighter padding + full-width cards + chart stacks nicely */
+@media (max-width: 520px){
+  .main{padding:12px 12px 18px}
+  .grid{gap:10px}
+  .card .hd{padding:12px 12px 10px}
+  .card .bd{padding:12px}
+  .typeDistWrap{grid-template-columns:1fr; justify-items:center}
+  #typeDistChart{width:min(240px, 72vw)}
+  .typeDistLegend{width:100%}
 }
-
-
-/* v6: calendar cells more compact on phone */
-@media (max-width:980px){
-  .calDay{min-height:68px !important; padding:8px !important; border-radius:12px !important;}
-  .calNum{font-size:12px !important; font-weight:900;}
-  .calBadge{font-size:11px !important; padding:2px 6px !important; border-radius:999px !important;}
-  .calMeta{margin-top:4px !important; font-size:10.5px !important; line-height:1.25 !important;
-    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
-    max-height: 2.6em;
-  }
-}
-
-
-/* v7: calendar meta hidden (only show count badge) */
-.calMeta:empty{ display:none !important; }
-
-
-/* v8: move calendar count badge lower to avoid overlapping the date number */
-@media (max-width:980px){
-  .calBadge{ top:30px !important; right:10px !important; }
-}
-
-
-/* v9: library */
-.chiprow{display:flex; gap:8px; flex-wrap:wrap;}
-.chip{padding:8px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.10); background:rgba(255,255,255,.03); font-weight:900; font-size:12px; cursor:pointer; user-select:none;}
-.chip.active{background:rgba(99,102,241,.18); border-color:rgba(99,102,241,.38); color:#fff;}
-.libGrid{display:grid; grid-template-columns: repeat(2, 1fr); gap:10px;}
-@media (min-width:821px){ .libGrid{ grid-template-columns: repeat(3, 1fr);} }
-.libItem{border-radius:16px;}
-.libThumb{width:100%; aspect-ratio: 16/9; border-radius:14px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.08); display:flex; align-items:center; justify-content:center; font-weight:900; opacity:.75;}
-
-
-/* ================================
-   v11: stable navigation + filters + print panel
-   ================================ */
-.typeChips{
-  display:flex;
-  gap:8px;
-  flex-wrap: nowrap !important;
-  overflow-x:auto !important;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 6px;
-}
-.typeChips::-webkit-scrollbar{ height: 6px; }
-.typeChips::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.10); border-radius: 999px; }
-.typeChip{ white-space:nowrap; flex:0 0 auto; }
-
-/* clients filter bar */
-.clientsFilterBar{
-  margin-top:10px;
-  padding:10px;
-  border-radius:16px;
-  border:1px solid rgba(255,255,255,.08);
-  background: rgba(255,255,255,.03);
-}
-.filterRow{ display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
-.filterPills{ display:flex; gap:8px; flex-wrap:wrap; }
-.pillBtn{
-  padding:8px 10px;
-  border-radius:999px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.03);
-  font-weight:1000;
-  font-size:12px;
-  cursor:pointer;
-  color: rgba(255,255,255,.92);
-}
-.pillBtn.active{ background: rgba(99,102,241,.18); border-color: rgba(99,102,241,.38); color:#fff; }
-
-/* print panel modal */
-#printPanel .modalCard{ max-width: 520px; }
-.printOptions{ display:grid; gap:10px; margin-top:12px; }
-.printOpt{
-  padding:12px;
-  border-radius:14px;
-  border:1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.03);
-  cursor:pointer;
-}
-.printOpt:hover{ background: rgba(255,255,255,.05); }
-.printOpt .t{ font-weight:1000; }
-.printOpt .d{ font-size:12px; opacity:.75; margin-top:4px; line-height:1.3; }
-
 </style>
 </head>
 <body>
@@ -418,13 +317,7 @@
       <button data-view="templates"><span class="ico">🧩</span>清单模板库 <span class="small">可编辑</span></button>
       <button data-view="deliver"><span class="ico">🎁</span>纪念交付包 <span class="small">交付</span></button>
       <button data-view="training"><span class="ico">🎓</span>服务体系训练营 <span class="small">内训</span></button>
-      <button data-view="settings"><span class="ico">⚙️</span>
-    <button class="navItem" type="button" data-view="library">
-      <span class="ico">🖼️</span>
-      <span class="txt">资料库</span>
-      <span class="sub">展示</span>
-    </button>
-设置与备份 <span class="small">导入导出</span></button>
+      <button data-view="settings"><span class="ico">⚙️</span>设置与备份 <span class="small">导入导出</span></button>
     </div>
 
     <div class="sep"></div>
@@ -443,69 +336,101 @@
         <span class="pill" id="currentClientPill">当前客户：未选择</span>
       </div>
       <div class="row">
-        <button class="btn" data-action="profileOpen">👤 <span id="profileNamePill">安宁</span></button>
-
         <button class="btn" data-action="print">🖨 打印当前页</button>
-        </div>
+        <button class="btn primary" data-action="newClient">➕ 新建客户</button>
+      </div>
     </div>
 
     <!-- Views -->
-    <section id="view-dashboard" class="grid cols3">
+    <section id="view-dashboard">
+  <div class="row" style="justify-content:space-between; align-items:flex-end; gap:10px; margin-top:6px">
+    <div style="font-weight:900; font-size:18px">经营概览</div>
+    <div class="small muted">点击指标可联动跳转（本月单量 → 档期本月；待收款 → 客户待收）。</div>
+  </div>
 
-      <div class="card" id="homeHero" style="grid-column:1/-1;">
-        <div class="bd" style="display:flex; gap:12px; align-items:center; justify-content:space-between; flex-wrap:wrap;">
-          <div style="display:flex; gap:12px; align-items:center;">
-            <div id="homeAvatar" style="width:52px;height:52px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:900;">AN</div>
-            <div>
-              <div style="font-size:18px;font-weight:900;">HI，<span id="homeName">安宁</span></div>
-              <div class="small muted">今年单量 / 本月单量 / 收款与客户类型统计，会随你录入的信息自动变化</div>
-            </div>
-          </div>
-          <div class="row" style="gap:10px;">
-            <button class="btn" data-action="goto" data-view="schedule">📅 去档期</button>
-            <button class="btn" data-action="goto" data-view="clients">👤 去客户</button>
+  <div class="grid cols4" style="margin-top:12px">
+    <div class="card statCard" data-action="dashJump" data-target="schedule" data-mode="year">
+      <div class="statTop"><span class="ico">📅</span><div class="title">今年单量</div></div>
+      <div class="num" id="kpiYearOrders">0</div>
+    </div>
+    <div class="card statCard" data-action="dashJump" data-target="schedule" data-mode="month">
+      <div class="statTop"><span class="ico">🗓️</span><div class="title">本月单量</div></div>
+      <div class="num" id="kpiMonthOrders">0</div>
+    </div>
+    <div class="card statCard" data-action="dashJump" data-target="clients" data-search="已收款">
+      <div class="statTop"><span class="ico">💰</span><div class="title">已收款</div></div>
+      <div class="num money" id="kpiReceivedSum">0.00</div>
+      <div class="small muted" style="margin-top:6px">元</div>
+    </div>
+    <div class="card statCard" data-action="dashJump" data-target="clients" data-search="待收款">
+      <div class="statTop"><span class="ico">⏳</span><div class="title">待收款</div></div>
+      <div class="num money" id="kpiDueSum">0.00</div>
+      <div class="small muted" style="margin-top:6px">元</div>
+    </div>
+  </div>
+
+  <div class="grid cols3 dash3">
+    <div class="card">
+      <div class="hd"><h2>客户总览</h2><span class="pill" id="kpiActive">进行中</span></div>
+      <div class="bd">
+        <div class="kpi kpiLink" data-action="dashJump" data-target="clients">
+          <div class="v" id="kpiClients">0</div><div class="muted">客户数量</div>
+        </div>
+        <div class="sep"></div>
+        <div class="kpi kpiLink" data-action="dashJump" data-target="schedule" data-mode="month">
+          <div class="v" id="kpiThisMonth">0</div><div class="muted">本月档期</div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="card">
+      <div class="hd"><h2>类型分布</h2><span class="pill" id="typeDistTotal">共0单</span></div>
+      <div class="bd">
+        <div class="typeDistWrap">
+          <canvas id="typeDistChart" width="220" height="220" aria-label="宴会类型占比图" role="img"></canvas>
+          <div class="typeDistLegend" id="typeDistLegend">
+            <div class="small muted">暂无数据</div>
           </div>
         </div>
+        <div class="small muted" style="margin-top:10px">点击某一类型可跳转到客户列表并自动筛选。</div>
+      </div>
+    </div>
+
+<div class="card">
+      <div class="hd"><h2>执行进度</h2><span class="pill">平均完成度</span></div>
+      <div class="bd">
+        <div class="progress"><div class="bar" id="avgBar"></div></div>
+        <div class="row" style="margin-top:10px">
+          <span class="pill">平均：<b id="avgPct">0%</b></span>
+          <span class="pill">逾期提醒：<b id="overdueCount">0</b></span>
+        </div>
+        <div class="sep"></div>
+        <div class="small">提示：给客户套用模板后，项目执行页会显示分阶段清单与进度条。</div>
+      </div>
+    </div>
+
       </div>
 
-      <div class="card">
-        <div class="hd"><h2>客户总览</h2><span class="pill" id="kpiActive">进行中</span></div>
-        <div class="bd">
-          <div class="kpi"><div class="v" id="kpiClients">0</div><div class="muted">客户数量</div></div>
-          <div class="sep"></div>
-          <div class="kpi"><div class="v" id="kpiThisMonth">0</div><div class="muted">本月档期</div></div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="hd"><h2>执行进度</h2><span class="pill">平均完成度</span></div>
-        <div class="bd">
-          <div class="progress"><div class="bar" id="avgBar"></div></div>
-          <div class="row" style="margin-top:10px">
-            <span class="pill">平均：<b id="avgPct">0%</b></span>
-            <span class="pill">逾期提醒：<b id="overdueCount">0</b></span>
-          </div>
-          <div class="sep"></div>
-          <div class="small">提示：给客户套用模板后，项目执行页会显示分阶段清单与进度条。</div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="hd"><h2>快捷动作</h2><span class="pill">一键套用</span></div>
-        <div class="bd">
-          <div class="notice">
-            <b>推荐工作流</b>
-            <div class="small" style="margin-top:6px; line-height:1.6">
-              ① 建客户 → ② 选模板套用 → ③ 按阶段打勾执行 → ④ 记录复盘与风险 → ⑤ 生成纪念交付包 → ⑥ 售后回访
-            </div>
-          </div>
-          <div class="sep"></div>
-          <div class="row">
-            <button class="btn" data-action="goto" data-view="clients">👥 去客户列表</button>
-            <button class="btn" data-action="goto" data-view="templates">🧩 去模板库</button>
-            <button class="btn" data-action="goto" data-view="training">🎓 去训练营</button>
+  <div class="grid cols1 dashFull" style="margin-top:12px">
+<div class="card">
+      <div class="hd"><h2>快捷动作</h2><span class="pill">一键套用</span></div>
+      <div class="bd">
+        <div class="notice">
+          <b>推荐工作流</b>
+          <div class="small" style="margin-top:6px; line-height:1.6">
+            ① 建客户 → ② 选模板套用 → ③ 按阶段打勾执行 → ④ 记录复盘与风险 → ⑤ 生成纪念交付包 → ⑥ 售后回访
           </div>
         </div>
+        <div class="sep"></div>
+        <div class="row">
+          <button class="btn" data-action="goto" data-view="clients">👥 去客户列表</button>
+          <button class="btn" data-action="goto" data-view="templates">🧩 去模板库</button>
+          <button class="btn" data-action="goto" data-view="training">🎓 去训练营</button>
+        </div>
       </div>
-    </section>
+    </div>  </div>
+</section>
 
     
     <section id="view-schedule" class="hidden">
@@ -552,21 +477,20 @@
           <div class="hd">
             <h2>客户列表</h2>
             <div class="row">
-              <input id="clientSearch" placeholder="搜索：姓名 / 电话 / 备注" style="width:240px"/>
-              <button class="btn" data-action="export">⬇ 导出</button>
+              <input id="clientSearch" placeholder="搜索：姓名 / 电话 / 宴会类型 / 备注" style="width:240px"/>
+                            <select id="clientTypeFilter" style="width:160px">
+                <option value="">全部类型</option>
+                <option value="周岁宴">周岁宴</option>
+                <option value="十周岁">十周岁</option>
+                <option value="订婚宴">订婚宴</option>
+                <option value="婚礼">婚礼</option>
+                <option value="寿宴">寿宴</option>
+                <option value="商演">商演</option>
+                <option value="年会">年会</option>
+              </select>
+<button class="btn" data-action="export">⬇ 导出</button>
               <button class="btn" data-action="import">⬆ 导入</button>
             </div>
-  <div class="clientsFilterBar" id="clientsFilterBar">
-    <div class="filterRow">
-      <div style="font-weight:1000;">筛选</div>
-      <div class="filterPills">
-        <button class="pillBtn" type="button" id="pillUnpaid">待收款</button>
-        <button class="pillBtn" type="button" id="pillReset">重置</button>
-      </div>
-    </div>
-    <div class="typeChips" id="clientsTypeChips" style="margin-top:10px;"></div>
-  </div>
-
           </div>
           <div class="bd">
             <div id="clientList"></div>
@@ -579,23 +503,23 @@
             <div class="formgrid">
               <div><label>客户姓名</label><input id="fName" placeholder="如：张三 & 李四"/></div>
               <div><label>档期日期</label><input id="fDate" type="date"/></div>
-              <div>
-                <label>客户类型</label>
-                <select id="fEventType">
-                  <option value="婚礼">婚礼</option>
-                  <option value="订婚宴">订婚宴</option>
-                  <option value="百日宴">百日宴</option>
-                  <option value="周岁生日宴">周岁生日宴</option>
-                  <option value="十周岁生日宴">十周岁生日宴</option>
-                  <option value="寿宴">寿宴</option>
-                  <option value="其他宴会">其他宴会</option>
-                </select>
-              </div>
-
               <div><label>电话</label><input id="fPhone" placeholder=""/></div>
               <div><label>微信</label><input id="fWechat" placeholder=""/></div>
               <div><label>城市 / 酒店</label><input id="fCity" placeholder=""/></div>
-              <div>
+                            <div>
+                <label>宴会类型</label>
+                <select id="fBanquetType">
+                  <option value="">（未选择）</option>
+                  <option value="周岁宴">周岁宴</option>
+                  <option value="十周岁">十周岁</option>
+                  <option value="订婚宴">订婚宴</option>
+                  <option value="婚礼">婚礼</option>
+                  <option value="寿宴">寿宴</option>
+                  <option value="商演">商演</option>
+                  <option value="年会">年会</option>
+                </select>
+              </div>
+<div>
                 <label>项目状态</label>
                 <select id="fStatus">
                   <option value="in_progress">进行中</option>
@@ -609,22 +533,17 @@
             <div class="sep"></div>
 
             <div class="formgrid">
-              <div><label>套餐 / 服务范围</label><input id="fPackage" placeholder="如：全案策划 / 轻策划 / 司仪统筹等"/></div>
-              <div><label>预算区间</label><input id="fBudget" placeholder="如：3-5W"/></div>
-              <div><label>业绩总额（元）</label><input id="fTotalAmount" placeholder="如：38800"/></div>
-              <div><label>已收款（元）</label><input id="fPaidAmount" placeholder="如：20000"/></div>
+          <div><label>套餐 / 服务范围</label><input id="fPackage" placeholder="如：全案策划 / 轻策划 / 司仪统筹等"/></div>
+          <div><label>预算区间</label><input id="fBudget" placeholder="如：3-5W"/></div>
+        </div>
 
-            </div>
+        <div class="formgrid3" style="margin-top:12px">
+          <div><label>应收总额（元）</label><input id="fReceivable" type="number" step="0.01" min="0" placeholder="0.00"/></div>
+          <div><label>已收款（元）</label><input id="fReceived" type="number" step="0.01" min="0" placeholder="0.00"/></div>
+          <div><label>待收款（元）</label><input id="fDue" type="text" readonly placeholder="0.00"/></div>
+        </div>
 
-            
-            <div class="sep"></div>
-            <div class="formgrid">
-              <div><label>下一次重大事件（名称）</label><input id="fNextEventName" placeholder="如：一周年 / 二宝百日 / 父母寿宴"/></div>
-              <div><label>下一次重大事件（日期）</label><input id="fNextEventDate" type="date"/></div>
-              <div><label>提前提醒（天）</label><input id="fRemindDays" type="number" min="0" step="1" placeholder="30"/></div>
-            </div>
-
-<div style="margin-top:12px">
+            <div style="margin-top:12px">
               <label>备注（可写：风格偏好 / 家庭关系 / 特殊安排 / 风险点）</label>
               <textarea id="fNotes" placeholder="建议用：背景-诉求-限制-决策人-风险-下一步"></textarea>
             </div>
@@ -859,40 +778,8 @@
       </div>
     </section>
 
-  
-    <section id="view-me" class="hidden">
-  <div class="card">
-    <div class="h2">我的</div>
-    <div class="muted" style="margin-top:6px">清单模板库、纪念交付包、训练营与设置</div>
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:14px">
-      <button class="btn" data-action="goto" data-view="templates">📚 清单模板库</button>
-      <button class="btn" data-action="goto" data-view="delivery">🎁 纪念交付包</button>
-      <button class="btn" data-action="goto" data-view="training">🏕 服务体系训练营</button>
-      <button class="btn primary" data-action="goto" data-view="settings">⚙️ 设置与备份</button>
-    </div>
-  </div>
-</section>
-
-
-
-  
-<section id="view-library" class="hidden">
-  <div class="hd">
-    <h2>资料库</h2>
-    <div class="row" style="margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
-      <div class="typeChips" id="libCats"></div>
-      <button class="btn primary" data-action="libAdd">＋ 添加案例</button>
-    </div>
-  </div>
-  <div class="libGrid" id="libGrid"></div>
-  <div class="card" id="libEmpty" style="margin-top:12px; display:none;">
-    <div class="muted">暂无资料。点击「添加案例」上传图片/视频链接/图文介绍。</div>
-  </div>
-</section>
-
-</main>
+  </main>
 </div>
-
 
 <div id="printArea" class="hidden"></div>
 
@@ -909,6 +796,16 @@
   const uid = ()=> Math.random().toString(16).slice(2,10);
   const todayStr = ()=> new Date().toISOString().slice(0,10);
   const fmtDate = (d)=> d ? new Date(d).toLocaleDateString('zh-CN') : '—';
+  const toNum = (v)=>{ const n = parseFloat(String(v||'').replace(/,/g,'')); return Number.isFinite(n)? n : 0; };
+  const round2 = (n)=> Math.round(toNum(n)*100)/100;
+  const fmtMoney = (n)=> round2(n).toFixed(2);
+
+  // ---- banquet type stats ----
+  const BANQUET_TYPES = ['周岁宴','十周岁','订婚宴','婚礼','寿宴','商演','年会','未选择'];
+  const typeColor = (i)=>{
+    const palette = ['#22d3ee','#a78bfa','#34d399','#60a5fa','#fbbf24','#fb7185','#c084fc','#94a3b8'];
+    return palette[i % palette.length];
+  };
 
   function toast(title, msg){
     const box = $('#toast');
@@ -939,10 +836,9 @@
   const DEFAULT_TEMPLATES = JSON.parse($('#templatesData').textContent || '{}');
 
   const defaultState = {
-    settings: { theme:'dark', brandName:'叙述婚礼｜服务交付', profileName:'安宁', avatarUrl:'', teamMode:'local' },
+    settings: { theme:'dark', brandName:'叙述婚礼｜服务交付' },
     templates: DEFAULT_TEMPLATES,
     clients: [],
-    library: [],
     currentClientId: null
   };
 
@@ -958,7 +854,6 @@
         settings: {...defaultState.settings, ...(s.settings||{})},
         templates: s.templates && Object.keys(s.templates).length ? s.templates : structuredClone(DEFAULT_TEMPLATES),
         clients: Array.isArray(s.clients)? s.clients : [],
-        library: Array.isArray(s.library)? s.library : [],
       };
     }catch(e){
       console.error(e);
@@ -1044,11 +939,27 @@
   }
 
   function renderDashboard(){
-    $('#kpiClients').textContent = state.clients.length;
-    const now = new Date();
-    const ym = now.toISOString().slice(0,7);
-    const monthCount = state.clients.filter(c=> (c.date||'').slice(0,7)===ym).length;
-    $('#kpiThisMonth').textContent = monthCount;
+$('#kpiClients').textContent = state.clients.length;
+const now = new Date();
+const year = String(now.getFullYear());
+const ym = now.toISOString().slice(0,7);
+const yearCount = state.clients.filter(c=> (c.date||'').slice(0,4)===year).length;
+const monthCount = state.clients.filter(c=> (c.date||'').slice(0,7)===ym).length;
+$('#kpiThisMonth').textContent = monthCount;
+
+let receivedSum = 0;
+let dueSum = 0;
+state.clients.forEach(c=>{
+  const r = toNum(c.receivable);
+  const got = toNum(c.received);
+  receivedSum += got;
+  dueSum += Math.max(0, r-got);
+});
+
+if($('#kpiYearOrders')) $('#kpiYearOrders').textContent = yearCount;
+if($('#kpiMonthOrders')) $('#kpiMonthOrders').textContent = monthCount;
+if($('#kpiReceivedSum')) $('#kpiReceivedSum').textContent = fmtMoney(receivedSum);
+if($('#kpiDueSum')) $('#kpiDueSum').textContent = fmtMoney(dueSum);
 
     const avg = avgProgress();
     $('#avgPct').textContent = avg + '%';
@@ -1064,24 +975,186 @@
 
     const active = state.clients.filter(c=> c.status==='in_progress' || c.status==='booked').length;
     $('#kpiActive').textContent = `进行中：${active}`;
+
+    // banquet type distribution (dashboard card)
+    renderTypeDistribution();
   }
+
+
+  function drawTypeDonut(canvas, items){
+    if(!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    const w = Math.max(10, rect.width || 220);
+    const h = Math.max(10, rect.height || 220);
+    const cw = Math.round(w * dpr);
+    const ch = Math.round(h * dpr);
+    if(canvas.width !== cw || canvas.height !== ch){
+      canvas.width = cw;
+      canvas.height = ch;
+    }
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    ctx.clearRect(0,0,w,h);
+
+    const total = items.reduce((a,b)=>a + (b.value||0), 0);
+    const cx = w/2, cy = h/2;
+    const r = Math.min(w,h)/2 - 10;
+    const inner = r * 0.58;
+
+    // base ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI*2);
+    ctx.fillStyle = 'rgba(255,255,255,.06)';
+    ctx.fill();
+
+    if(total <= 0){
+      // empty
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath(); ctx.arc(cx, cy, inner, 0, Math.PI*2); ctx.fill();
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.fillStyle = 'rgba(159,176,199,.95)';
+      ctx.font = '700 14px system-ui';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('暂无数据', cx, cy);
+      return;
+    }
+
+    let start = -Math.PI/2;
+    items.forEach(it=>{
+      const v = it.value || 0;
+      if(v <= 0) return;
+      const ang = (v/total) * Math.PI*2;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, r, start, start + ang);
+      ctx.closePath();
+      ctx.fillStyle = it.color || '#22d3ee';
+      ctx.fill();
+      // separators
+      ctx.strokeStyle = 'rgba(0,0,0,.25)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      start += ang;
+    });
+
+    // cut hole
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.beginPath(); ctx.arc(cx, cy, inner, 0, Math.PI*2); ctx.fill();
+    ctx.globalCompositeOperation = 'source-over';
+
+    // center text
+    ctx.fillStyle = 'rgba(233,241,255,.95)';
+    ctx.font = '900 22px system-ui';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(String(total), cx, cy - 6);
+    ctx.fillStyle = 'rgba(159,176,199,.95)';
+    ctx.font = '12px system-ui';
+    ctx.fillText('总单量', cx, cy + 16);
+  }
+
+  function renderTypeDistribution(){
+    const canvas = $('#typeDistChart');
+    const legend = $('#typeDistLegend');
+    const totalEl = $('#typeDistTotal');
+    if(!canvas || !legend || !totalEl) return;
+
+    const counts = {};
+    // preset known types
+    BANQUET_TYPES.forEach(t=> counts[t]=0);
+
+    // count
+    state.clients.forEach(c=>{
+      const raw = (c.banquetType || '').trim();
+      const t = raw ? raw : '未选择';
+      if(counts[t] === undefined) counts[t] = 0;
+      counts[t] += 1;
+    });
+
+    const total = Object.values(counts).reduce((a,b)=>a+b,0);
+    totalEl.textContent = `共${total}单`;
+
+    legend.innerHTML = '';
+    if(total === 0){
+      legend.innerHTML = '<div class="small muted">暂无数据</div>';
+      drawTypeDonut(canvas, []);
+      return;
+    }
+
+    // keep order: known types → 其他（导入/历史）→ 未选择
+    const base = BANQUET_TYPES.slice(0, -1); // remove '未选择'
+    const extra = Object.keys(counts)
+      .filter(k=> k && !BANQUET_TYPES.includes(k) && (counts[k]||0) > 0)
+      .sort((a,b)=> (counts[b]||0) - (counts[a]||0));
+    const ordered = [...base, ...extra, '未选择'];
+
+    const segs = ordered
+      .map((t, i)=>({name:t, value: counts[t]||0, color: typeColor(i)}))
+      .filter(x=> (x.value||0) > 0);
+
+    segs.forEach((seg, idx)=>{
+      const pct = seg.value / total * 100;
+      const wrap = document.createElement('div');
+      wrap.style.display = 'flex';
+      wrap.style.flexDirection = 'column';
+      wrap.style.gap = '6px';
+
+      const line = document.createElement('div');
+      line.className = 'typeLine';
+      line.dataset.action = 'dashJump';
+      line.dataset.target = 'clients';
+      line.dataset.search = '';
+      line.dataset.type = (seg.name === '未选择') ? '' : seg.name;
+      line.innerHTML = `
+        <span class="swatch" style="background:${seg.color}"></span>
+        <span class="typeLabel">${escapeHtml(seg.name)}</span>
+        <span class="typeMeta">${seg.value} 单 · ${pct.toFixed(1)}%</span>
+      `;
+
+      const bar = document.createElement('div');
+      bar.className = 'typeBar';
+      bar.innerHTML = `<i style="width:${pct.toFixed(2)}%; background:${seg.color}"></i>`;
+
+      wrap.appendChild(line);
+      wrap.appendChild(bar);
+      legend.appendChild(wrap);
+    });
+
+    drawTypeDonut(canvas, segs);
+  }
+
+
 
   // ---- clients list + form ----
   let editingClientId = null;
 
   function renderClientList(){
     const q = ($('#clientSearch').value || '').trim().toLowerCase();
+    const type = ($('#clientTypeFilter') ? ($('#clientTypeFilter').value || '').trim() : '');
     const wrap = $('#clientList');
     wrap.innerHTML = '';
 
     const arr = [...state.clients].sort((a,b)=> (a.date||'').localeCompare(b.date||''));
-    const filtered = q ? arr.filter(c=>{
-      const blob = `${c.name||''} ${c.phone||''} ${c.notes||''}`.toLowerCase();
-      return blob.includes(q);
-    }) : arr;
+    let filtered = arr;
+
+    if(type){
+      filtered = filtered.filter(c=> (c.banquetType||'')===type);
+    }
+    if(q){
+      filtered = filtered.filter(c=>{
+        const r = toNum(c.receivable);
+        const got = toNum(c.received);
+        const due = Math.max(0, r-got);
+        const tags = `${got>0?' 已收款 ':''}${due>0?' 待收款 ':''}`;
+        const blob = `${c.name||''} ${c.phone||''} ${c.wechat||''} ${c.city||''} ${c.package||''} ${c.budget||''} ${c.banquetType||''} ${c.notes||''} ${r} ${got} ${due} ${tags}`.toLowerCase();
+        return blob.includes(q);
+      });
+    }
 
     if(!filtered.length){
-      wrap.innerHTML = `<div class="small muted">暂无客户。点击右上角“新建客户”。</div>`;
+      wrap.innerHTML = `<div class="small muted">暂无匹配客户。可尝试清空筛选/关键词。</div>`;
       return;
     }
 
@@ -1095,8 +1168,11 @@
           <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start">
             <div>
               <div style="font-weight:900; font-size:14px">${escapeHtml(c.name||'未命名')}</div>
-              <div class="small muted">档期：${escapeHtml(fmtDate(c.date))} ｜ 状态：${escapeHtml(labelStatus(c.status))}</div>
+              <div class="small muted">
+                宴会：${escapeHtml(c.banquetType||'—')} ｜ 档期：${escapeHtml(fmtDate(c.date))} ｜ 状态：${escapeHtml(labelStatus(c.status))}
+              </div>
               <div class="small muted">${escapeHtml(c.phone||'')} ${c.city?('｜ '+escapeHtml(c.city)):''}</div>
+              <div class="small muted">收款：已收 ${fmtMoney(toNum(c.received))} / 应收 ${fmtMoney(toNum(c.receivable))} / 待收 ${fmtMoney(Math.max(0, toNum(c.receivable)-toNum(c.received)))}</div>
             </div>
             <div style="text-align:right">
               <span class="pill">${p.pct}%</span>
@@ -1116,6 +1192,7 @@
     });
   }
 
+
   function labelStatus(v){
     return ({
       in_progress:'进行中', booked:'已定档', completed:'已完成', paused:'暂停'
@@ -1130,9 +1207,13 @@
     $('#fPhone').value = '';
     $('#fWechat').value = '';
     $('#fCity').value = '';
+    $('#fBanquetType').value = '';
     $('#fStatus').value = 'in_progress';
     $('#fPackage').value = '';
     $('#fBudget').value = '';
+    $('#fReceivable') && ($('#fReceivable').value = '');
+    $('#fReceived') && ($('#fReceived').value = '');
+    $('#fDue') && ($('#fDue').value = '0.00');
     $('#fNotes').value = '';
   }
 
@@ -1141,39 +1222,40 @@
     $('#clientFormTitle').textContent = '编辑客户：' + (c.name||'');
     $('#fName').value = c.name||'';
     $('#fDate').value = c.date||'';
-    $('#fEventType').value = c.eventType || '婚礼';
     $('#fPhone').value = c.phone||'';
     $('#fWechat').value = c.wechat||'';
     $('#fCity').value = c.city||'';
+    $('#fBanquetType').value = c.banquetType||'';
     $('#fStatus').value = c.status||'in_progress';
     $('#fPackage').value = c.package||'';
     $('#fBudget').value = c.budget||'';
-    $('#fTotalAmount').value = (c.totalAmount ?? '') + '';
-    $('#fPaidAmount').value = (c.paidAmount ?? '') + '';
-    $('#fNextEventName').value = c.nextEventName||'';
-    $('#fNextEventDate').value = c.nextEventDate||'';
-    $('#fRemindDays').value = (c.remindDays ?? 30) + '';
+    if($('#fReceivable')) $('#fReceivable').value = fmtMoney(toNum(c.receivable));
+    if($('#fReceived')) $('#fReceived').value = fmtMoney(toNum(c.received));
+    if($('#fDue')) $('#fDue').value = fmtMoney(Math.max(0, toNum(c.receivable)-toNum(c.received)));
     $('#fNotes').value = c.notes||'';
   }
+function syncDuePreview(){
+  const r = toNum($('#fReceivable') ? $('#fReceivable').value : 0);
+  const got = toNum($('#fReceived') ? $('#fReceived').value : 0);
+  if($('#fDue')) $('#fDue').value = fmtMoney(Math.max(0, r-got));
+}
+
 
   function saveClientFromForm(){
     const obj = {
       id: editingClientId || uid(),
       name: $('#fName').value.trim() || '未命名客户',
       date: $('#fDate').value || '',
-      eventType: $('#fEventType').value || '婚礼',
       phone: $('#fPhone').value.trim() || '',
       wechat: $('#fWechat').value.trim() || '',
       city: $('#fCity').value.trim() || '',
+      banquetType: $('#fBanquetType').value || '',
       status: $('#fStatus').value || 'in_progress',
       package: $('#fPackage').value.trim() || '',
       budget: $('#fBudget').value.trim() || '',
-      totalAmount: Number($('#fTotalAmount').value || 0) || 0,
-      paidAmount: Number($('#fPaidAmount').value || 0) || 0,
-      nextEventName: $('#fNextEventName').value.trim() || '',
-      nextEventDate: $('#fNextEventDate').value || '',
-      remindDays: Number($('#fRemindDays').value || 30) || 30,
       notes: $('#fNotes').value || '',
+      receivable: round2($('#fReceivable') ? $('#fReceivable').value : 0),
+      received: round2($('#fReceived') ? $('#fReceived').value : 0),
       updatedAt: new Date().toISOString(),
     };
     const old = getClient(obj.id);
@@ -1188,36 +1270,7 @@
     }
     save();
     toast('已保存', '客户信息已更新。');
-    renderAll();
-    return obj.id;
-  }
-
-  function saveClientFromForm(){
-    const obj = {
-      id: editingClientId || uid(),
-      name: $('#fName').value.trim() || '未命名客户',
-      date: $('#fDate').value || '',
-      phone: $('#fPhone').value.trim() || '',
-      wechat: $('#fWechat').value.trim() || '',
-      city: $('#fCity').value.trim() || '',
-      status: $('#fStatus').value || 'in_progress',
-      package: $('#fPackage').value.trim() || '',
-      budget: $('#fBudget').value.trim() || '',
-      notes: $('#fNotes').value || '',
-      updatedAt: new Date().toISOString(),
-    };
-    const old = getClient(obj.id);
-    if(old){
-      Object.assign(old, obj);
-    }else{
-      obj.createdAt = new Date().toISOString();
-      obj.checklists = {};
-      obj.brief = { conclusion:'', risks:'' };
-      obj.deliver = { text:'' };
-      state.clients.push(obj);
-    }
-    save();
-    toast('已保存', '客户信息已更新。');
+    syncDuePreview();
     renderAll();
     return obj.id;
   }
@@ -1351,7 +1404,7 @@
       <div style="font-size:18px; font-weight:900">${escapeHtml(c.name)}</div>
       <div class="small muted" style="margin-top:6px">
         电话：${escapeHtml(c.phone||'—')} ｜ 微信：${escapeHtml(c.wechat||'—')}<br/>
-        地点：${escapeHtml(c.city||'—')} ｜ 套餐：${escapeHtml(c.package||'—')} ｜ 预算：${escapeHtml(c.budget||'—')}
+        地点：${escapeHtml(c.city||'—')} ｜ 宴会：${escapeHtml(c.banquetType||'—')} ｜ 套餐：${escapeHtml(c.package||'—')} ｜ 预算：${escapeHtml(c.budget||'—')}
       </div>
       <div class="sep"></div>
       <div class="small" style="white-space:pre-wrap; line-height:1.7">${escapeHtml(c.notes||'')}</div>
@@ -1681,6 +1734,24 @@
 
     if(a==='goto') return showView(t.dataset.view);
 
+    if(a==='dashJump'){
+      const target = t.dataset.target || 'dashboard';
+      const mode = t.dataset.mode || '';
+      const search = t.dataset.search || '';
+      if(target==='schedule'){
+        scheduleMode = 'month';
+        scheduleMonth = new Date().toISOString().slice(0,7);
+      }
+      if(target==='clients'){
+        const type = t.dataset.type || '';
+        if($('#clientSearch')) $('#clientSearch').value = search;
+        if($('#clientTypeFilter')) $('#clientTypeFilter').value = type;
+      }
+      showView(target);
+      if(target==='clients' && $('#clientSearch')) setTimeout(()=> $('#clientSearch').focus(), 60);
+      return;
+    }
+
     // Schedule actions
     if(a==='scheduleMode'){
       scheduleMode = t.dataset.mode || 'calendar';
@@ -1929,6 +2000,10 @@
   });
 
   $('#clientSearch').addEventListener('input', renderClientList);
+  const __typeSel = $('#clientTypeFilter');
+  if(__typeSel) __typeSel.addEventListener('change', renderClientList);
+  if($('#fReceivable')) $('#fReceivable').addEventListener('input', syncDuePreview);
+  if($('#fReceived')) $('#fReceived').addEventListener('input', syncDuePreview);
   $('#tplSearch').addEventListener('input', renderTplList);
 
   // ---- sidebar nav clicks ----
@@ -2024,7 +2099,7 @@
         <div class="calDay ${out?'out':''} ${has?'has':''}" data-action="openDay" data-date="${ds}">
           <div class="calNum">${dayNum}</div>
           ${has ? `<div class="calBadge">${orders.length} 单</div>` : ``}
-          <div class="calMeta">${""}</div>
+          <div class="calMeta">${has ? orders.slice(0,3).map(o=>escapeHtml(o.name)).join('<br/>') : '<span class="muted">无订单</span>'}</div>
         </div>
       `;
     }
@@ -2082,7 +2157,7 @@
           <div class="top">
             <div>
               <div style="font-weight:900">${escapeHtml(c.name||'未命名')}</div>
-              <div class="small muted">状态：${escapeHtml(labelStatus(c.status))}｜电话：${escapeHtml(c.phone||'—')}｜地点：${escapeHtml(c.city||'—')}</div>
+              <div class="small muted">宴会：${escapeHtml(c.banquetType||'—')}｜状态：${escapeHtml(labelStatus(c.status))}｜电话：${escapeHtml(c.phone||'—')}｜地点：${escapeHtml(c.city||'—')}</div>
             </div>
             <div class="row">
               <button class="btn" data-action="scheduleEditClient" data-id="${c.id}">✏️ 编辑</button>
@@ -2204,7 +2279,7 @@
               <div style="font-size:14px; font-weight:900">${escapeHtml(idx+1)}. ${escapeHtml(c.name||'未命名')}</div>
               <div class="muted" style="margin-top:4px; font-size:12px; line-height:1.5">
                 电话：${escapeHtml(c.phone||'—')} ｜ 微信：${escapeHtml(c.wechat||'—')}<br/>
-                地点：${escapeHtml(c.city||'—')} ｜ 套餐：${escapeHtml(c.package||'—')} ｜ 预算：${escapeHtml(c.budget||'—')}<br/>
+                地点：${escapeHtml(c.city||'—')} ｜ 宴会：${escapeHtml(c.banquetType||'—')} ｜ 套餐：${escapeHtml(c.package||'—')} ｜ 预算：${escapeHtml(c.budget||'—')}<br/>
                 状态：${escapeHtml(labelStatus(c.status))} ｜ 执行进度：${p.pct}%（${p.done}/${p.total||0}）
               </div>
             </div>
@@ -2298,6 +2373,9 @@
       phone: '',
       wechat: '',
       city: '',
+      banquetType: '婚礼',
+      receivable: 0,
+      received: 0,
       status: 'in_progress',
       package: '',
       budget: '',
@@ -2315,1033 +2393,6 @@
   renderAll();
   showView('dashboard');
 })();
-</script>
-<script>
-
-(function(){
-  const tabBtns = Array.from(document.querySelectorAll('.bottomTabs .tabBtn'));
-  function tabToView(tab){ return ({home:'dashboard',schedule:'schedule',clients:'clients',library:'library',me:'me'}[tab]||'dashboard'); }[tab]||'schedule'); }
-  function syncTabs(activeView){
-    tabBtns.forEach(btn=>{
-      const v = tabToView(btn.dataset.tab);
-      btn.classList.toggle('active', v===activeView);
-    });
-  }
-  tabBtns.forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const v = tabToView(btn.dataset.tab);
-      if(typeof window.showView==='function') window.showView(v);
-      syncTabs(v);
-    });
-  });
-
-    try{ syncTabs('dashboard'); }catch(e){}
-
-  // Patch showView to sync tabs + enhance schedule toolbar
-  if(typeof window.showView==='function' && !window.__showViewPatchedV4){
-    window.__showViewPatchedV4 = true;
-    const __orig = window.showView;
-    window.showView = function(v){
-      const ret = __orig(v);
-      try{ syncTabs(v); }catch(e){}
-      if(v==='schedule') setTimeout(enhanceScheduleToolbar, 60);
-      return ret;
-    };
-  }
-
-  // quick links in "我的"
-  document.addEventListener('click', (e)=>{
-    const btn = e.target.closest('[data-action]');
-    if(!btn) return;
-    const a = btn.dataset.action;
-    const goto = (view)=> (typeof window.showView==='function') && window.showView(view);
-    if(a==='gotoTemplates') return goto('templates');
-    if(a==='gotoDelivery') return goto('delivery');
-    if(a==='gotoTraining') return goto('training');
-    if(a==='gotoSettings') return goto('settings');
-  }, true);
-
-  function enhanceScheduleToolbar(){
-    const view = document.querySelector('[data-view="schedule"]');
-    if(!view) return;
-    const prev = view.querySelector('[data-action="schedulePrev"]');
-    const next = view.querySelector('[data-action="scheduleNext"]');
-    const add  = view.querySelector('[data-action="scheduleAdd"]') ||
-                 view.querySelector('[data-action="addSchedule"]') ||
-                 view.querySelector('[data-action="addClientSchedule"]') ||
-                 view.querySelector('[data-action="addClient"]');
-    const calBtn = view.querySelector('[data-action="scheduleModeCalendar"]') ||
-                   view.querySelector('[data-action="modeCalendar"]') ||
-                   view.querySelector('[data-action="scheduleCalendar"]');
-    const listBtn = view.querySelector('[data-action="scheduleModeList"]') ||
-                    view.querySelector('[data-action="modeList"]') ||
-                    view.querySelector('[data-action="scheduleModeMonth"]') ||
-                    view.querySelector('[data-action="scheduleOrders"]');
-    const title = view.querySelector('h1,h2,.h2,.pageTitle,.title');
-
-    const toolbar = (prev && prev.closest('.row,.toolbar,.bar,.actions,.stack')) || (prev && prev.parentElement);
-    if(!toolbar || toolbar.dataset.enhancedV4==='1') return;
-    toolbar.dataset.enhancedV4='1';
-
-    const header = document.createElement('div'); header.className='scheduleHeader';
-    const left = document.createElement('div'); left.className='left';
-    const right = document.createElement('div'); right.className='right';
-
-    if(title) left.appendChild(title);
-
-    const nav = document.createElement('div'); nav.className='seg';
-    if(prev) nav.appendChild(prev);
-    if(next) nav.appendChild(next);
-    left.appendChild(nav);
-
-    const modes = document.createElement('div'); modes.className='seg';
-    if(calBtn) modes.appendChild(calBtn);
-    if(listBtn) modes.appendChild(listBtn);
-    right.appendChild(modes);
-
-    if(add){ add.classList.add('primary'); right.appendChild(add); }
-
-    toolbar.parentElement.insertBefore(header, toolbar);
-    header.appendChild(left);
-    header.appendChild(right);
-    toolbar.remove();
-  }
-
-  setTimeout(()=>{ syncTabs('schedule'); enhanceScheduleToolbar(); }, 150);
-})();
-
-</script>
-<script>
-
-// v5: Improve "月订单" layout by tagging existing blocks (best-effort, no breaking)
-(function(){
-  function tagMonthOrders(){
-    const view = document.querySelector('[data-view="schedule"]');
-    if(!view) return;
-
-    // Find elements containing "本月" "月单" "订单" keywords
-    const cards = Array.from(view.querySelectorAll('.card, .statCard, .kpiCard, .tile'))
-      .filter(el => (el.innerText || '').includes('本月') || (el.innerText || '').includes('月单') || (el.innerText || '').includes('订单'));
-
-    // Tag the nearest grid container as KPI grid
-    cards.slice(0,6).forEach(el=>{
-      const box = el.closest('.stats, .kpis, .grid, .row') || el.parentElement;
-      if(box) box.classList.add('kpiGrid');
-      el.classList.add('kpiCard');
-    });
-
-    // Create a section wrapper for month orders (chart + list areas)
-    // Heuristic: find the first KPI grid, then wrap following siblings that look like chart/table lists
-    const kpiGrid = view.querySelector('.kpiGrid');
-    if(!kpiGrid) return;
-
-    // Look for next content blocks (tables/charts) in same view
-    const candidates = [];
-    let cur = kpiGrid.nextElementSibling;
-    let hops = 0;
-    while(cur && hops < 6){
-      const txt = (cur.innerText||'');
-      if(cur.querySelector('table') || cur.querySelector('canvas') || /明细|月度|收入|订单/.test(txt)){
-        candidates.push(cur);
-      }
-      cur = cur.nextElementSibling;
-      hops++;
-    }
-
-    if(candidates.length){
-      const section = document.createElement('div');
-      section.className = 'monthSection';
-      kpiGrid.parentElement.insertBefore(section, candidates[0]);
-      candidates.forEach(n=> section.appendChild(n));
-    }
-  }
-
-  setTimeout(tagMonthOrders, 180);
-  // also run when schedule view is shown (if showView exists)
-  if(typeof window.showView==='function' && !window.__monthTagPatchedV5){
-    window.__monthTagPatchedV5 = true;
-    const __orig = window.showView;
-    window.showView = function(v){
-      const ret = __orig(v);
-      if(v==='schedule') setTimeout(tagMonthOrders, 120);
-      return ret;
-    };
-  }
-})();
-
-</script>
-
-<!-- Mobile Bottom Tabs (v6) -->
-
-<!-- Bottom Tabs v9 -->
-<nav class="bottomTabs" aria-label="底部导航">
-  <div class="tabs">
-    <button class="tabBtn" type="button" data-tab="home"><div>🏠</div><small>首页</small></button>
-    <button class="tabBtn" type="button" data-tab="schedule"><div>📅</div><small>档期</small></button>
-    <button class="tabBtn" type="button" data-tab="clients"><div>👤</div><small>客户</small></button>
-    <button class="tabBtn" type="button" data-tab="library"><div>🖼️</div><small>资料库</small></button>
-    <button class="tabBtn" type="button" data-tab="me"><div>⚙️</div><small>我的</small></button>
-  </div>
-</nav>
-
-
-<script>
-
-/* ================================
-   v6 Mobile Navigation + Schedule Header Fixes
-   ================================ */
-(function(){
-  if(window.__v6MobilePatched) return;
-  window.__v6MobilePatched = true;
-
-  const tabs = Array.from(document.querySelectorAll('.bottomTabs .tabBtn'));
-  function tabToView(tab){ return ({schedule:'schedule',clients:'clients',execute:'client',templates:'templates',me:'me'}[tab]||'schedule'); }
-
-  function getActiveView(){
-    const sec = document.querySelector('section[id^="view-"]:not(.hidden)');
-    if(!sec) return 'schedule';
-    return sec.id.replace('view-','');
-  }
-
-  function syncTabs(){
-    const active = getActiveView();
-    tabs.forEach(btn=>{
-      const v = tabToView(btn.dataset.tab);
-      btn.classList.toggle('active', v===active);
-    });
-  }
-
-  tabs.forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      const v = tabToView(btn.dataset.tab);
-      if(typeof window.showView==='function') window.showView(v);
-      syncTabs();
-    }, {passive:true});
-  });
-
-  // Patch showView once to keep tabs in sync
-  if(typeof window.showView==='function' && !window.__v6ShowViewWrapped){
-    window.__v6ShowViewWrapped = true;
-    const __orig = window.showView;
-    window.showView = function(v){
-      const ret = __orig(v);
-      try{ syncTabs(); }catch(e){}
-      try{ if(v==='schedule') setTimeout(enhanceScheduleHeader, 30); }catch(e){}
-      return ret;
-    };
-  }
-
-  // Schedule header: re-layout buttons (calendar/month, prev/next, add) for mobile
-  function enhanceScheduleHeader(){
-    if(!window.matchMedia('(max-width:980px)').matches) return;
-    const view = document.querySelector('#view-schedule');
-    if(!view) return;
-    const hd = view.querySelector('.hd');
-    const row = hd && hd.querySelector('.row');
-    if(!row || row.dataset.v6==='1') return;
-    row.dataset.v6='1';
-
-    const title = hd.querySelector('h2');
-    const modeBtns = Array.from(row.querySelectorAll('[data-action="scheduleMode"]'));
-    const prev = row.querySelector('[data-action="schedulePrev"]');
-    const next = row.querySelector('[data-action="scheduleNext"]');
-    const label = row.querySelector('#scheduleMonthLabel');
-    const add = row.querySelector('[data-action="scheduleAdd"]');
-
-    const header = document.createElement('div');
-    header.className = 'scheduleHeader';
-
-    const left = document.createElement('div');
-    left.className = 'left';
-    if(title) left.appendChild(title);
-
-    const nav = document.createElement('div');
-    nav.className = 'seg';
-    if(prev) nav.appendChild(prev);
-    if(label){ label.style.margin='0'; nav.appendChild(label); }
-    if(next) nav.appendChild(next);
-
-    const right = document.createElement('div');
-    right.className = 'right';
-
-    const modeSeg = document.createElement('div');
-    modeSeg.className = 'seg';
-    modeBtns.forEach(b=> modeSeg.appendChild(b));
-
-    right.appendChild(modeSeg);
-    right.appendChild(nav);
-    if(add) right.appendChild(add);
-
-    // Replace row with header
-    row.parentElement.insertBefore(header, row);
-    header.appendChild(left);
-    header.appendChild(right);
-    row.remove();
-  }
-
-  // Keep schedule mode buttons active style
-  function syncScheduleModeActive(){
-    const view = document.querySelector('#view-schedule');
-    if(!view) return;
-    const btns = Array.from(view.querySelectorAll('[data-action="scheduleMode"]'));
-    btns.forEach(b=>{
-      const m = b.dataset.mode;
-      b.classList.toggle('active', (window.scheduleMode||'calendar')===m);
-    });
-  }
-
-  document.addEventListener('click', (e)=>{
-    const t = e.target.closest('[data-action]');
-    if(!t) return;
-    if(t.dataset.action==='scheduleMode') setTimeout(syncScheduleModeActive, 0);
-  }, true);
-
-  window.addEventListener('resize', ()=>{ try{ enhanceScheduleHeader(); syncTabs(); }catch(e){} });
-
-  // First sync
-  setTimeout(()=>{ syncTabs(); enhanceScheduleHeader(); syncScheduleModeActive(); }, 120);
-})();
-
-</script>
-<script>
-
-/* ================================
-   v7 Hotfix: Bottom tabs always work
-   ================================ */
-(function(){
-  if(window.__v7TabsBound) return;
-  window.__v7TabsBound = true;
-
-  function safeShow(v){
-    const el = document.getElementById('view-'+v);
-    if(!el){
-      console.warn('[tabs] view not found:', v);
-      return;
-    }
-    if(typeof window.showView === 'function') window.showView(v);
-    else{
-      // minimal fallback
-      document.querySelectorAll('main section[id^="view-"]').forEach(s=>s.classList.add('hidden'));
-      el.classList.remove('hidden');
-    }
-  }
-
-  function tabToView(tab){
-    return ({schedule:'schedule',clients:'clients',execute:'client',templates:'templates',me:'me'}[tab]||'schedule');
-  }
-
-  function sync(){
-    const active = (document.querySelector('main section[id^="view-"]:not(.hidden)')?.id||'view-schedule').replace('view-','');
-    document.querySelectorAll('.bottomTabs .tabBtn').forEach(btn=>{
-      btn.classList.toggle('active', tabToView(btn.dataset.tab)===active);
-    });
-  }
-
-  document.addEventListener('click', (e)=>{
-    const btn = e.target.closest('.bottomTabs .tabBtn');
-    if(!btn) return;
-    const v = tabToView(btn.dataset.tab);
-    safeShow(v);
-    sync();
-  }, true);
-
-  // Keep in sync after sidebar nav clicks
-  document.addEventListener('click', (e)=>{
-    const b = e.target.closest('#nav button[data-view]');
-    if(!b) return;
-    setTimeout(sync, 0);
-  }, true);
-
-  setTimeout(sync, 120);
-})();
-
-</script>
-
-  <div class="modal hidden" id="profileModal">
-    <div class="modalCard">
-      <div class="h2">个人设置</div>
-      <div class="small muted" style="margin-top:6px;">修改头像与名称（本地保存）。团队版上线后可扩展权限与账号。</div>
-
-      <div style="display:flex; gap:12px; margin-top:12px; align-items:center;">
-        <div id="profileAvatarPreview" style="width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.10);overflow:hidden;display:flex;align-items:center;justify-content:center;font-weight:900;">AN</div>
-        <div style="flex:1">
-          <label>头像（图片URL，可先留空）</label>
-          <input id="profileAvatarUrl" placeholder="https://..."/>
-        </div>
-      </div>
-
-      <div style="margin-top:10px;">
-        <label>名称</label>
-        <input id="profileName" placeholder="例如：安宁"/>
-      </div>
-
-      <div class="row" style="justify-content:flex-end;margin-top:12px;">
-        <button class="btn" data-action="profileCancel">取消</button>
-        <button class="btn primary" data-action="profileSave">保存</button>
-      </div>
-    </div>
-  </div>
-
-
-<script>
-/* ================================
-   v9: profile+library + home KPI extras
-   ================================ */
-(function(){
-  if(window.__v9Loaded) return;
-  window.__v9Loaded = true;
-
-  const $ = window.$ || ((s)=>document.querySelector(s));
-  const $$ = window.$$ || ((s)=>Array.from(document.querySelectorAll(s)));
-
-  function safeNum(v){ const n = Number(v); return isNaN(n)?0:n; }
-
-  // ---- Profile (stored in state.settings) ----
-  function profile(){
-    return {
-      name: (state.settings.profileName || '安宁'),
-      avatarUrl: (state.settings.avatarUrl || '')
-    };
-  }
-  function renderProfile(){
-    const p = profile();
-    const namePill = document.getElementById('profileNamePill');
-    if(namePill) namePill.textContent = p.name;
-    const homeName = document.getElementById('homeName');
-    if(homeName) homeName.textContent = p.name;
-
-    const homeAvatar = document.getElementById('homeAvatar');
-    const prev = document.getElementById('profileAvatarPreview');
-    [homeAvatar, prev].forEach(el=>{
-      if(!el) return;
-      if(p.avatarUrl){
-        el.innerHTML = '<img src="'+p.avatarUrl+'" style="width:100%;height:100%;object-fit:cover"/>';
-      }else{
-        el.textContent = (p.name||'AN').slice(0,2).toUpperCase();
-      }
-    });
-  }
-  function openProfile(){
-    const p = profile();
-    document.getElementById('profileModal')?.classList.remove('hidden');
-    const url = document.getElementById('profileAvatarUrl');
-    const name = document.getElementById('profileName');
-    if(url) url.value = p.avatarUrl;
-    if(name) name.value = p.name;
-    renderProfile();
-  }
-  function closeProfile(){ document.getElementById('profileModal')?.classList.add('hidden'); }
-  function saveProfile(){
-    const url = (document.getElementById('profileAvatarUrl')?.value || '').trim();
-    const name = (document.getElementById('profileName')?.value || '').trim() || '安宁';
-    state.settings.profileName = name;
-    state.settings.avatarUrl = url;
-    save();
-    closeProfile();
-    renderProfile();
-    if(typeof toast==='function') toast('已保存','个人信息已更新。');
-  }
-
-  // Ensure entry in 我的
-  const me = document.getElementById('view-me');
-  if(me && !me.querySelector('[data-action="profileOpen"]')){
-    const wrap = me.querySelector('.bd') || me;
-    const btn = document.createElement('button');
-    btn.className = 'btn';
-    btn.dataset.action = 'profileOpen';
-    btn.textContent = '👤 个人设置（头像/名称）';
-    btn.style.marginTop = '10px';
-    wrap.appendChild(btn);
-  }
-
-  // ---- Dashboard KPI extras ----
-  function monthKey(dateStr){
-    const d = new Date(dateStr);
-    if(isNaN(d)) return '';
-    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-  }
-  function yearKey(dateStr){
-    const d = new Date(dateStr);
-    if(isNaN(d)) return '';
-    return String(d.getFullYear());
-  }
-  function renderDashboardExtras(){
-    const now = new Date();
-    const ym = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
-    const y = String(now.getFullYear());
-
-    const yearOrders = (state.clients||[]).filter(c=> yearKey(c.date)===y).length;
-    const paid = (state.clients||[]).reduce((s,c)=> s + safeNum(c.paidAmount||0), 0);
-    const rev  = (state.clients||[]).reduce((s,c)=> s + safeNum(c.totalAmount||0), 0);
-
-    const elY = document.getElementById('kpiYearOrders');
-    const elP = document.getElementById('kpiPaid');
-    const elR = document.getElementById('kpiRevenue');
-    if(elY) elY.textContent = yearOrders;
-    if(elP) elP.textContent = Math.round(paid);
-    if(elR) elR.textContent = Math.round(rev);
-  }
-
-  // ---- Library (stored in state.library) ----
-  const LIB_CATS = ['全部','主持人','化妆师','婚礼管家','摄影摄像/跟拍团队'];
-  let libCat = '全部';
-  let libEditingId = null;
-
-  function libItems(){
-    state.library = Array.isArray(state.library) ? state.library : [];
-    return state.library;
-  }
-  function renderLibCats(){
-    const wrap = document.getElementById('libCats');
-    if(!wrap) return;
-    wrap.innerHTML = '';
-    LIB_CATS.forEach(c=>{
-      const chip = document.createElement('div');
-      chip.className = 'chip' + (c===libCat?' active':'');
-      chip.textContent = c;
-      chip.onclick = ()=>{ libCat=c; renderLibrary(); };
-      wrap.appendChild(chip);
-    });
-  }
-  function renderLibrary(){
-    renderLibCats();
-    const grid = document.getElementById('libGrid');
-    const empty = document.getElementById('libEmpty');
-    if(!grid) return;
-
-    const arr = libItems().slice().filter(it=> libCat==='全部' ? true : it.cat===libCat);
-    grid.innerHTML = '';
-    if(empty) empty.style.display = arr.length ? 'none' : 'block';
-
-    arr.forEach(it=>{
-      const card = document.createElement('div');
-      card.className = 'card libItem';
-      const thumb = it.cover ? `<img src="${it.cover}" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.08)"/>`
-                             : `<div class="libThumb">${it.cat}</div>`;
-      card.innerHTML = `
-        <div class="bd">
-          ${thumb}
-          <div style="font-weight:900;margin-top:10px;">${escapeHtml(it.name||'未命名')}</div>
-          <div class="small muted" style="margin-top:4px;">${escapeHtml(it.cat||'')}</div>
-          <div class="row" style="margin-top:10px;">
-            ${it.video? `<a class="btn" href="${it.video}" target="_blank">🎬 播放</a>`:''}
-            <button class="btn" data-lib="edit" data-id="${it.id}">编辑</button>
-            <button class="btn danger" data-lib="del" data-id="${it.id}">删除</button>
-          </div>
-        </div>
-      `;
-      grid.appendChild(card);
-    });
-  }
-
-  function openLib(editItem){
-    document.getElementById('libModal')?.classList.remove('hidden');
-    const sel = document.getElementById('libFieldCat');
-    if(sel){
-      sel.innerHTML = '';
-      LIB_CATS.filter(x=>x!=='全部').forEach(c=>{
-        const o = document.createElement('option'); o.value=c; o.textContent=c; sel.appendChild(o);
-      });
-    }
-    document.getElementById('libModalTitle').textContent = editItem ? '编辑案例' : '添加案例';
-    libEditingId = editItem ? editItem.id : null;
-    document.getElementById('libFieldCat').value = editItem?.cat || '主持人';
-    document.getElementById('libFieldName').value = editItem?.name || '';
-    document.getElementById('libFieldCover').value = editItem?.cover || '';
-    document.getElementById('libFieldVideo').value = editItem?.video || '';
-    document.getElementById('libFieldDesc').value = editItem?.desc || '';
-  }
-  function closeLib(){ document.getElementById('libModal')?.classList.add('hidden'); libEditingId=null; }
-  function saveLib(){
-    const cat = document.getElementById('libFieldCat').value;
-    const name = (document.getElementById('libFieldName').value||'').trim() || '未命名';
-    const cover = (document.getElementById('libFieldCover').value||'').trim();
-    const video = (document.getElementById('libFieldVideo').value||'').trim();
-    const desc = (document.getElementById('libFieldDesc').value||'').trim();
-    const arr = libItems();
-    const id = libEditingId || ('L'+Math.random().toString(36).slice(2,9));
-    const item = { id, cat, name, cover, video, desc, updatedAt: new Date().toISOString() };
-    const idx = arr.findIndex(x=>x.id===id);
-    if(idx>=0) arr[idx]=item; else arr.unshift(item);
-    state.library = arr;
-    save();
-    closeLib();
-    renderLibrary();
-    if(typeof toast==='function') toast('已保存','资料库已更新。');
-  }
-  function delLib(id){
-    state.library = libItems().filter(x=>x.id!==id);
-    save();
-    renderLibrary();
-    if(typeof toast==='function') toast('已删除','资料已移除。');
-  }
-
-  // ---- Actions ----
-  document.addEventListener('click', (e)=>{
-    const a = e.target.closest('[data-action]');
-    if(a){
-      if(a.dataset.action==='profileOpen') return openProfile();
-      if(a.dataset.action==='profileCancel') return closeProfile();
-      if(a.dataset.action==='profileSave') return saveProfile();
-      if(a.dataset.action==='libAdd') return openLib(null);
-      if(a.dataset.action==='libCancel') return closeLib();
-      if(a.dataset.action==='libSave') return saveLib();
-    }
-    const l = e.target.closest('[data-lib]');
-    if(l){
-      const id = l.dataset.id;
-      const action = l.dataset.lib;
-      const it = libItems().find(x=>x.id===id);
-      if(action==='edit') return openLib(it);
-      if(action==='del'){ if(confirm('确定删除该资料？')) delLib(id); }
-    }
-  }, true);
-
-  // Wrap renderAll to inject extras
-  if(typeof window.renderAll==='function' && !window.__renderAllV9){
-    window.__renderAllV9 = true;
-    const __orig = window.renderAll;
-    window.renderAll = function(){
-      const r = __orig();
-      try{ renderProfile(); }catch(e){}
-      try{ renderDashboardExtras(); }catch(e){}
-      try{ renderLibrary(); }catch(e){}
-      return r;
-    }
-  }
-
-  // Fix deliver link mismatch if any other places
-  // (Already patched in html, but keep safe)
-  // ---- Init ----
-  setTimeout(()=>{ try{ renderProfile(); renderDashboardExtras(); }catch(e){} }, 80);
-})();
-</script>
-
-
-<div class="modal hidden" id="printPanel">
-  <div class="modalCard">
-    <div class="h2">选择打印内容</div>
-    <div class="muted" style="margin-top:6px;">用于现场对接与后期交接。你可以先选择打印范围。</div>
-
-    <div class="printOptions">
-      <div class="printOpt" data-print="current">
-        <div class="t">打印当前页</div>
-        <div class="d">适合快速打印当前看到的页面。</div>
-      </div>
-      <div class="printOpt" data-print="today">
-        <div class="t">打印今日执行单</div>
-        <div class="d">按今天档期汇总：客户信息 + 今日执行清单。</div>
-      </div>
-      <div class="printOpt" data-print="clientAll">
-        <div class="t">打印该客户所有清单集合</div>
-        <div class="d">包含该客户的全部模板清单（可用于交接）。</div>
-      </div>
-    </div>
-
-    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:12px;">
-      <button class="btn" type="button" id="printClose">取消</button>
-    </div>
-  </div>
-</div>
-
-<script>
-
-/* ================================
-   v11 Stable Core: views mapping + KPI/Type click linkage + Clients filters + Print panel
-   ================================ */
-(function(){
-  if(window.__v11StableLoaded) return;
-  window.__v11StableLoaded = true;
-
-  // ====== Constants ======
-  const EVENT_TYPES = ['婚礼','订婚宴','百日宴','周岁生日宴','十周岁生日宴','寿宴','其他宴会'];
-
-  // ====== Storage helpers ======
-  function readJSON(key, fallback){
-    try{ return JSON.parse(localStorage.getItem(key) || ''); }catch(e){ return fallback; }
-  }
-
-  // ====== Data getters (compat) ======
-  function getClients(){
-    // prefer existing global if present
-    if(Array.isArray(window.clients)) return window.clients;
-    const v = readJSON('nw_clients_v1', []);
-    return Array.isArray(v)? v: [];
-  }
-  function getSchedules(){
-    if(Array.isArray(window.schedules)) return window.schedules;
-    const v = readJSON('nw_schedules_v1', []);
-    return Array.isArray(v)? v: [];
-  }
-  function monthKey(d){
-    const dt = new Date(d);
-    if(isNaN(dt)) return '';
-    return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');
-  }
-  function nowMonth(){
-    const dt = new Date();
-    return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0');
-  }
-  function nowYear(){ return new Date().getFullYear(); }
-
-  // money fields compatibility
-  function sumMoney(clients, keys){
-    let s = 0;
-    clients.forEach(c=>{
-      for(const k of keys){
-        if(c && c[k] != null){
-          const v = Number(c[k]);
-          if(!isNaN(v)){ s += v; break; }
-        }
-      }
-    });
-    return Math.round(s);
-  }
-
-  // ====== View mapping ======
-  const viewMap = {
-    home: 'dashboard',
-    dashboard: 'dashboard',
-    schedule: 'schedule',
-    clients: 'clients',
-    library: 'library',
-    me: 'me',
-    templates: 'templates',
-    deliver: 'deliver',
-    training: 'training',
-    settings: 'settings',
-    exec: 'exec'
-  };
-
-  function show(v){
-    const vv = viewMap[v] || v;
-    if(typeof window.showView === 'function'){
-      // call original if exists
-      window.showView(vv);
-    }else{
-      document.querySelectorAll('main section[id^="view-"]').forEach(s=>s.classList.add('hidden'));
-      document.getElementById('view-'+vv)?.classList.remove('hidden');
-    }
-    // after show hooks
-    setTimeout(()=>{
-      if(vv==='dashboard') renderHomeKPIs();
-      if(vv==='clients') renderClientsFilters();
-      if(vv==='library' && typeof window.renderLibrary==='function') window.renderLibrary();
-      syncNavActive(vv);
-    }, 0);
-  }
-
-  // ====== Sync active UI for bottom tabs & sidebar ======
-  function syncNavActive(active){
-    // bottom tabs
-    document.querySelectorAll('.bottomTabs .tabBtn').forEach(btn=>{
-      const t = btn.dataset.tab;
-      const vv = viewMap[t] || t;
-      btn.classList.toggle('active', vv===active);
-    });
-    // sidebar items (data-view)
-    document.querySelectorAll('[data-view]').forEach(el=>{
-      const vv = viewMap[el.dataset.view] || el.dataset.view;
-      el.classList.toggle('active', vv===active);
-    });
-  }
-
-  // ====== Home KPIs ======
-  function renderHomeKPIs(){
-    const clients = getClients();
-    const schedules = getSchedules();
-    const m = nowMonth();
-    const y = nowYear();
-
-    const yearOrders = schedules.filter(s=>{
-      const k = monthKey(s.date || s.day || s.start || s.weddingDate);
-      return k && k.startsWith(String(y));
-    }).length;
-
-    const monthOrders = schedules.filter(s=>{
-      const k = monthKey(s.date || s.day || s.start || s.weddingDate);
-      return k === m;
-    }).length;
-
-    const paid = sumMoney(clients, ['paidAmount','paid','received','receivedAmount']);
-    const total = sumMoney(clients, ['totalAmount','total','contractAmount','amount','orderAmount']);
-    const unpaid = Math.max(total - paid, 0);
-
-    const setText=(id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=String(v); };
-    setText('kpiYearOrders', yearOrders);
-    setText('kpiMonthOrders', monthOrders);
-    setText('kpiPaid', paid);
-    setText('kpiUnpaid', unpaid);
-
-    // Build home type chips (click -> clients filter)
-    const chips = document.getElementById('homeTypeChips');
-    if(chips){
-      chips.innerHTML = '';
-      EVENT_TYPES.forEach(t=>{
-        const n = clients.filter(c => (c.eventType||c.type||'婚礼')===t).length;
-        const chip = document.createElement('div');
-        chip.className = 'typeChip';
-        chip.textContent = t + ' · ' + n;
-        chip.onclick = ()=>{ setClientTypeFilter(t); show('clients'); };
-        chips.appendChild(chip);
-      });
-    }
-  }
-
-  // ====== Clients filters ======
-  function setClientTypeFilter(type){
-    window.__clientTypeFilter = type || '全部';
-    window.__clientUnpaidOnly = false;
-  }
-  function setClientUnpaidOnly(on){
-    window.__clientUnpaidOnly = !!on;
-  }
-
-  function buildClientsTypeChips(){
-    const wrap = document.getElementById('clientsTypeChips');
-    if(!wrap) return;
-    wrap.innerHTML = '';
-
-    const mk = (label)=>{
-      const chip = document.createElement('div');
-      chip.className = 'typeChip' + ((window.__clientTypeFilter||'全部')===label ? ' active':'');
-      chip.textContent = label;
-      chip.onclick = ()=>{
-        window.__clientTypeFilter = label;
-        // unpaid filter remains as-is unless reset
-        renderClientsFilters(true);
-        // trigger existing list render if present
-        if(typeof window.renderClients==='function') window.renderClients();
-        if(typeof window.renderClientList==='function') window.renderClientList();
-      };
-      return chip;
-    };
-
-    wrap.appendChild(mk('全部'));
-    EVENT_TYPES.forEach(t=>wrap.appendChild(mk(t)));
-  }
-
-  function renderClientsFilters(onlyUI){
-    // pills
-    const unpaidBtn = document.getElementById('pillUnpaid');
-    const resetBtn = document.getElementById('pillReset');
-
-    if(unpaidBtn){
-      unpaidBtn.classList.toggle('active', !!window.__clientUnpaidOnly);
-      unpaidBtn.onclick = ()=>{
-        window.__clientUnpaidOnly = !window.__clientUnpaidOnly;
-        renderClientsFilters(true);
-        if(typeof window.renderClients==='function') window.renderClients();
-        if(typeof window.renderClientList==='function') window.renderClientList();
-      };
-    }
-    if(resetBtn){
-      resetBtn.onclick = ()=>{
-        window.__clientTypeFilter = '全部';
-        window.__clientUnpaidOnly = false;
-        renderClientsFilters(true);
-        if(typeof window.renderClients==='function') window.renderClients();
-        if(typeof window.renderClientList==='function') window.renderClientList();
-      };
-    }
-
-    buildClientsTypeChips();
-
-    if(onlyUI) return;
-
-    // If the app already has its own client render, we just keep UI state.
-  }
-
-  // ====== Patch existing client renderer (if present) to apply filters ======
-  function computeClientAmounts(c){
-    const paid = Number(c.paidAmount ?? c.paid ?? c.received ?? c.receivedAmount ?? 0) || 0;
-    const total = Number(c.totalAmount ?? c.total ?? c.contractAmount ?? c.amount ?? c.orderAmount ?? 0) || 0;
-    return { paid, total, unpaid: Math.max(total - paid, 0) };
-  }
-
-  function filterClientsList(list){
-    let res = Array.isArray(list)? list.slice(): [];
-    const type = window.__clientTypeFilter || '全部';
-    const unpaidOnly = !!window.__clientUnpaidOnly;
-
-    if(type !== '全部'){
-      res = res.filter(c => (c.eventType||c.type||'婚礼') === type);
-    }
-    if(unpaidOnly){
-      res = res.filter(c => computeClientAmounts(c).unpaid > 0);
-    }
-    return res;
-  }
-
-  // Wrap known render function names, best-effort
-  function wrapRenderer(fnName){
-    const fn = window[fnName];
-    if(typeof fn !== 'function') return;
-    if(fn.__v11Wrapped) return;
-    function wrapped(){
-      // If their renderer reads from window.clients, we can temporarily swap filtered list.
-      const original = window.clients;
-      try{
-        const base = getClients();
-        window.clients = filterClientsList(base);
-        return fn.apply(this, arguments);
-      }finally{
-        window.clients = original;
-      }
-    }
-    wrapped.__v11Wrapped = true;
-    window[fnName] = wrapped;
-  }
-  wrapRenderer('renderClients');
-  wrapRenderer('renderClientList');
-
-  // ====== KPI click linkage ======
-  document.addEventListener('click', (e)=>{
-    const k = e.target.closest('[data-action="kpi"]');
-    if(!k) return;
-    const type = k.dataset.kpi;
-
-    if(type==='monthOrders'){
-      // jump to schedule and focus on current month
-      window.__scheduleFocusMonth = nowMonth();
-      show('schedule');
-      // if there is a month switcher, attempt set/select:
-      setTimeout(()=>{
-        try{
-          const sel = document.querySelector('#scheduleMonth, #monthPicker, select[name="month"]');
-          if(sel){
-            sel.value = window.__scheduleFocusMonth;
-            sel.dispatchEvent(new Event('change', {bubbles:true}));
-          }
-        }catch(err){}
-      }, 50);
-      return;
-    }
-    if(type==='unpaid'){
-      window.__clientTypeFilter = '全部';
-      window.__clientUnpaidOnly = true;
-      show('clients');
-      return;
-    }
-    if(type==='paid'){
-      // optional: show clients and we could add a 'paid only' later; for now just go clients
-      window.__clientTypeFilter = '全部';
-      window.__clientUnpaidOnly = false;
-      show('clients');
-      return;
-    }
-    if(type==='yearOrders'){
-      window.__scheduleFocusYear = nowYear();
-      show('schedule');
-      return;
-    }
-  }, true);
-
-  // ====== Bottom tabs click (stable) ======
-  document.addEventListener('click', (e)=>{
-    const btn = e.target.closest('.bottomTabs .tabBtn');
-    if(!btn) return;
-    const tab = btn.dataset.tab;
-    if(!tab) return;
-    show(tab);
-  }, true);
-
-  // ====== Sidebar click (stable) ======
-  document.addEventListener('click', (e)=>{
-    const item = e.target.closest('[data-view]');
-    if(!item) return;
-    // avoid conflicts with other buttons
-    const v = item.dataset.view;
-    if(!v) return;
-    // ignore if not a navigation button-like element
-    if(item.classList.contains('tabBtn')) return;
-    // If it's inside bottom tabs we already handle above
-    if(item.closest('.bottomTabs')) return;
-
-    // If it looks like sidebar nav item, navigate
-    if(item.classList.contains('navItem') || item.closest('.sidebar') || item.closest('.sideNav')){
-      show(v);
-    }
-  }, true);
-
-  // ====== Print panel ======
-  function openPrintPanel(){
-    document.getElementById('printPanel')?.classList.remove('hidden');
-  }
-  function closePrintPanel(){
-    document.getElementById('printPanel')?.classList.add('hidden');
-  }
-
-  // Hook any existing print button
-  function attachPrintHooks(){
-    // any element with data-action="openPrint" or text contains 打印当前页
-    document.querySelectorAll('[data-action="openPrint"]').forEach(el=>{
-      el.onclick = (e)=>{ e.preventDefault(); openPrintPanel(); };
-    });
-    // fallback: buttons containing "打印当前页"
-    document.querySelectorAll('button, a').forEach(el=>{
-      const t = (el.textContent||'').trim();
-      if(t==='打印当前页' || t==='打印'){
-        el.addEventListener('click', (e)=>{ e.preventDefault(); openPrintPanel(); }, {once:true});
-      }
-    });
-  }
-
-  document.addEventListener('click', (e)=>{
-    const p = e.target.closest('#printPanel .printOpt');
-    if(p){
-      const mode = p.dataset.print;
-      closePrintPanel();
-      if(mode==='current'){
-        window.print();
-        return;
-      }
-      if(mode==='today'){
-        // best-effort: show schedule then print
-        window.__printMode = 'today';
-        show('schedule');
-        setTimeout(()=>{ window.print(); window.__printMode=null; }, 300);
-        return;
-      }
-      if(mode==='clientAll'){
-        // best-effort: if current client view exists, print it; else go clients.
-        window.__printMode = 'clientAll';
-        const clientView = document.getElementById('view-client');
-        if(clientView && !clientView.classList.contains('hidden')){
-          setTimeout(()=>{ window.print(); window.__printMode=null; }, 200);
-        }else{
-          show('clients');
-          setTimeout(()=>{ window.print(); window.__printMode=null; }, 350);
-        }
-        return;
-      }
-    }
-    if(e.target && e.target.id==='printClose'){ closePrintPanel(); }
-  }, true);
-
-  // ====== Ensure library categories fixed to 4 ======
-  // If v9 library exists, it may already have LIB_CATS. We'll override by setting __libCats.
-  window.__libCats = ['主持人','化妆师','婚礼管家','摄影摄像/跟拍团队'];
-
-  // ====== Init: start at dashboard (desktop) or home tab (mobile) ======
-  setTimeout(()=>{
-    attachPrintHooks();
-    // Determine currently visible view; if none, show dashboard
-    const sec = document.querySelector('main section[id^="view-"]:not(.hidden)');
-    if(!sec){
-      show('dashboard');
-    }else{
-      const active = sec.id.replace('view-','');
-      syncNavActive(active);
-      if(active==='dashboard') renderHomeKPIs();
-      if(active==='clients') renderClientsFilters();
-    }
-
-    // If library chips should be stable: set default cat to 全部
-    if(typeof window.__libCat==='undefined') window.__libCat = '全部';
-  }, 120);
-})();
-
 </script>
 </body>
 </html>
