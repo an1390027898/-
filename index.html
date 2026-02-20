@@ -246,7 +246,7 @@
     .a4 .sig div{border-top:1px solid #bbb; padding-top:3mm; width:48%}
     .a4 .noteLines{height:26mm; border:1px dashed #bbb; border-radius:10px; padding:8px; color:#777}
     @media print{
-      .sidebar, .topbar, .btn, .toast, .overlay{display:none !important}
+      .sidebar, .topbar, .btn, .toast, .overlay, .bottomNav{display:none !important}
       body{background:#fff}
       .main{padding:0}
       .card{box-shadow:none; border:1px solid #ddd}
@@ -299,7 +299,7 @@
 
 /* Mobile: tighter padding + full-width cards + chart stacks nicely */
 @media (max-width: 520px){
-  .main{padding:12px 12px 18px}
+  .main{padding:12px 12px calc(86px + env(safe-area-inset-bottom))}
   .grid{gap:10px}
   .card .hd{padding:12px 12px 10px}
   .card .bd{padding:12px}
@@ -316,6 +316,61 @@
   #typeDistChart{width:min(240px, 100%)}
   .typeDistLegend{width:100%}
 }
+/* ===== Mobile bottom navigation (v4) ===== */
+.bottomNav{display:none}
+@media (max-width: 980px){
+  /* Mobile: use bottom tabs instead of sidebar */
+  .sidebar{display:none !important}
+  .overlay{display:none !important}
+  .hamb{display:none !important}
+  .main{padding-bottom:calc(86px + env(safe-area-inset-bottom))}
+  .bottomNav{
+    display:flex;
+    position:fixed;
+    left:0; right:0; bottom:0;
+    z-index:60;
+    padding:10px 10px calc(10px + env(safe-area-inset-bottom));
+    gap:8px;
+    background:linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.20) 40%), var(--bg);
+    border-top:1px solid var(--line);
+    backdrop-filter: blur(10px);
+  }
+  .bottomNav button{
+    all:unset;
+    cursor:pointer;
+    flex:1;
+    border:1px solid transparent;
+    background:rgba(255,255,255,.03);
+    color:var(--muted);
+    border-radius:14px;
+    padding:10px 6px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    font-weight:900;
+    line-height:1;
+    min-width:0;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .bottomNav button:active{transform:translateY(1px)}
+  .bottomNav .bn-ico{font-size:18px}
+  .bottomNav .bn-txt{font-size:12px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+  .bottomNav button.active{
+    color:var(--text);
+    background:linear-gradient(180deg, rgba(125,211,252,.18), rgba(167,139,250,.10));
+    border-color:rgba(125,211,252,.28);
+    box-shadow: 0 10px 26px rgba(0,0,0,.28);
+  }
+}
+/* My page quick links */
+.meGrid{margin-top:12px}
+.meItem{cursor:pointer; transition:transform .12s ease}
+.meItem:active{transform:translateY(1px)}
+.meItem .titleRow{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.meItem .titleRow b{font-size:15px}
+.meItem .titleRow .small{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -787,8 +842,53 @@
       </div>
     </section>
 
+    <section id="view-me" class="hidden">
+      <div class="row" style="justify-content:space-between; align-items:flex-end; gap:10px; margin-top:6px">
+        <div style="font-weight:900; font-size:18px">我的</div>
+        <div class="small muted">清单 / 交付 / 训练 / 设置</div>
+      </div>
+
+      <div class="grid cols2 m2 meGrid">
+        <div class="card meItem" role="button" tabindex="0" data-action="goto" data-view="templates">
+          <div class="hd"><h2>🧩 清单模版库</h2><span class="pill">模板</span></div>
+          <div class="bd">
+            <div class="small">把常用清单做成模板，一键套用到项目执行。</div>
+          </div>
+        </div>
+
+        <div class="card meItem" role="button" tabindex="0" data-action="goto" data-view="deliver">
+          <div class="hd"><h2>🎁 纪念交付包</h2><span class="pill">交付</span></div>
+          <div class="bd">
+            <div class="small">交付清单、素材与复盘，全部集中管理。</div>
+          </div>
+        </div>
+
+        <div class="card meItem" role="button" tabindex="0" data-action="goto" data-view="training">
+          <div class="hd"><h2>🎓 服务训练体系</h2><span class="pill">训练</span></div>
+          <div class="bd">
+            <div class="small">内训资料、服务流程与SOP，随时复习。</div>
+          </div>
+        </div>
+
+        <div class="card meItem" role="button" tabindex="0" data-action="goto" data-view="settings">
+          <div class="hd"><h2>⚙️ 设置与备份</h2><span class="pill">迁移</span></div>
+          <div class="bd">
+            <div class="small">主题与偏好设置，导入导出备份。</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 </div>
+
+<nav class="bottomNav" id="bottomNav" aria-label="底部导航">
+  <button class="active" data-view="dashboard"><div class="bn-ico">🏠</div><div class="bn-txt">首页仪表盘</div></button>
+  <button data-view="schedule"><div class="bn-ico">📅</div><div class="bn-txt">档期记录</div></button>
+  <button data-view="clients"><div class="bn-ico">👥</div><div class="bn-txt">客户档案</div></button>
+  <button data-view="client"><div class="bn-ico">🧾</div><div class="bn-txt">项目执行</div></button>
+  <button data-view="me"><div class="bn-ico">👤</div><div class="bn-txt">我的</div></button>
+</nav>
 
 <div id="printArea" class="hidden"></div>
 
@@ -892,6 +992,9 @@
     $$('main section[id^="view-"]').forEach(s=> s.classList.add('hidden'));
     $('#view-'+view).classList.remove('hidden');
     $$('#nav button').forEach(b=> b.classList.toggle('active', b.dataset.view===view));
+    const bn = $('#bottomNav');
+    const bottomKey = (['templates','deliver','training','settings'].includes(view)) ? 'me' : view;
+    if(bn) $$('#bottomNav button').forEach(b=> b.classList.toggle('active', b.dataset.view===bottomKey));
     if(window.matchMedia('(max-width: 980px)').matches) closeSidebar();
     renderAll();
   }
@@ -2026,6 +2129,17 @@ function syncDuePreview(){
     if(!btn) return;
     showView(btn.dataset.view);
   });
+
+
+  // ---- bottom nav clicks (mobile) ----
+  const bottomNav = $('#bottomNav');
+  if(bottomNav){
+    bottomNav.addEventListener('click', (e)=>{
+      const btn = e.target.closest('button[data-view]');
+      if(!btn) return;
+      showView(btn.dataset.view);
+    });
+  }
 
 
   // ---- schedule (calendar / month list) ----
