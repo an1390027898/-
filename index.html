@@ -205,12 +205,13 @@
     .calDay:hover{transform: translateY(-1px)}
     .calDay.out{opacity:.45}
     .calDay.has{border-color: rgba(125,211,252,.35); background: rgba(125,211,252,.08)}
-    .calNum{font-weight:900; font-size:14px}
-    .calMeta{margin-top:6px; font-size:11px; color:var(--muted); line-height:1.35}
+    .calNum{font-weight:900; font-size:14px; line-height:1}
+    .calMeta{margin-top:6px; font-size:11px; color:var(--muted); line-height:1.35; overflow:hidden; display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3}
+    .calTop{display:flex; justify-content:space-between; align-items:flex-start; gap:6px}
     .calBadge{
-      position:absolute; right:10px; top:10px;
-      padding:4px 8px; border-radius:999px; border:1px solid var(--line);
+      padding:3px 7px; border-radius:999px; border:1px solid var(--line);
       background: rgba(255,255,255,.03); font-size:12px; color:var(--text);
+      line-height:1; white-space:nowrap;
     }
     .listGroup{margin-bottom:12px}
     .listGroup .dateTitle{font-weight:900; margin:0 0 8px}
@@ -315,6 +316,16 @@
   .typeDistWrap{grid-template-columns:1fr; justify-items:center}
   #typeDistChart{width:min(240px, 100%)}
   .typeDistLegend{width:100%}
+
+  /* Schedule calendar: compact cells on phones */
+  .calHead{gap:6px}
+  .calGrid{gap:6px}
+  .calHead div{padding:6px 0; border-radius:10px; font-size:11px}
+  .calDay{min-height:72px; padding:8px; border-radius:12px}
+  .calNum{font-size:13px}
+  .calBadge{padding:2px 6px; font-size:11px}
+  .calMeta{margin-top:4px; font-size:10px; line-height:1.25; -webkit-line-clamp:2}
+
 }
 /* ===== Mobile bottom navigation (v4) ===== */
 .bottomNav{display:none}
@@ -2225,8 +2236,10 @@ function syncDuePreview(){
       const has = orders.length>0;
       calHtml += `
         <div class="calDay ${out?'out':''} ${has?'has':''}" data-action="openDay" data-date="${ds}">
-          <div class="calNum">${dayNum}</div>
-          ${has ? `<div class="calBadge">${orders.length} 单</div>` : ``}
+          <div class="calTop">
+            <div class="calNum">${dayNum}</div>
+            ${has ? `<div class="calBadge">${orders.length}单</div>` : ``}
+          </div>
           <div class="calMeta">${has ? orders.slice(0,3).map(o=>escapeHtml(o.name)).join('<br/>') : '<span class="muted">无订单</span>'}</div>
         </div>
       `;
