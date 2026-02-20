@@ -91,12 +91,24 @@
     .grid.cols2{grid-template-columns: 1fr 1fr}
     .grid.cols3{grid-template-columns: 1fr 1fr 1fr}
     .grid.cols4{grid-template-columns: 1fr 1fr 1fr 1fr}
+.grid.m2{}
+
+/* Responsive grids
+   - 默认：小屏单列更稳
+   - Dashboard 主页：用 .m2 强制保持两列（按你的“同排”需求） */
 @media (max-width: 1100px){
   .grid.cols3{grid-template-columns:1fr}
-  .grid.cols2{grid-template-columns:1fr}
+  .grid.cols2:not(.m2){grid-template-columns:1fr}
+  .grid.cols2.m2{grid-template-columns:1fr 1fr}
   .grid.cols4{grid-template-columns:1fr 1fr}
 }
-@media (max-width: 700px){ .grid.cols4{grid-template-columns:1fr} }
+@media (max-width: 700px){
+  .grid.cols4:not(.m2){grid-template-columns:1fr}
+  .grid.cols4.m2{grid-template-columns:1fr 1fr}
+}
+@media (max-width: 380px){
+  .grid.m2{grid-template-columns:1fr !important}
+}
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.03), transparent 18%), var(--panel);
       border:1px solid var(--line); border-radius: var(--radius);
@@ -260,10 +272,10 @@
 /* ===== Dashboard sizing + responsive improvements (v3) ===== */
 .grid.cols1{grid-template-columns:1fr}
 
-/* Make the 3 dashboard cards feel the same size on desktop */
-.dash3{align-items:stretch}
-.dash3 > .card{display:flex; flex-direction:column; min-height: clamp(280px, 34vh, 360px)}
-.dash3 > .card > .bd{flex:1; display:flex; flex-direction:column}
+/* Make the dashboard cards feel the same size on desktop */
+.dash2,.dash3{align-items:stretch}
+.dash2 > .card,.dash3 > .card{display:flex; flex-direction:column; min-height: clamp(280px, 34vh, 360px)}
+.dash2 > .card > .bd,.dash3 > .card > .bd{flex:1; display:flex; flex-direction:column}
 
 /* Type distribution: stable layout (chart + legend) */
 .typeDistWrap{
@@ -274,13 +286,14 @@
 }
 #typeDistChart{
   width: min(240px, 42vw);
+  max-width: 100%;
   aspect-ratio: 1 / 1;
   height: auto;
 }
 .typeDistLegend{min-width:0; max-height:240px; overflow:auto; padding-right:6px}
 
 @media (max-width: 980px){
-  .dash3 > .card{min-height:auto}
+  .dash2 > .card, .dash3 > .card{min-height:auto}
   .typeDistLegend{max-height:none}
 }
 
@@ -290,8 +303,17 @@
   .grid{gap:10px}
   .card .hd{padding:12px 12px 10px}
   .card .bd{padding:12px}
+
+  /* KPI cards: make 2-col layout readable on phone */
+  .statCard{padding:12px 12px}
+  .statCard .title{font-size:14px}
+  .statCard .num{font-size:32px; margin-top:12px}
+  .statCard .num.money{font-size:28px}
+  .statCard .ico{width:26px; height:26px; border-radius:9px; font-size:15px}
+
+  /* Type distribution: prevent overflow when card is half-width */
   .typeDistWrap{grid-template-columns:1fr; justify-items:center}
-  #typeDistChart{width:min(240px, 72vw)}
+  #typeDistChart{width:min(240px, 100%)}
   .typeDistLegend{width:100%}
 }
 </style>
@@ -348,7 +370,7 @@
     <div class="small muted">点击指标可联动跳转（本月单量 → 档期本月；待收款 → 客户待收）。</div>
   </div>
 
-  <div class="grid cols4" style="margin-top:12px">
+  <div class="grid cols4 m2 dashKpis" style="margin-top:12px">
     <div class="card statCard" data-action="dashJump" data-target="schedule" data-mode="year">
       <div class="statTop"><span class="ico">📅</span><div class="title">今年单量</div></div>
       <div class="num" id="kpiYearOrders">0</div>
@@ -369,7 +391,7 @@
     </div>
   </div>
 
-  <div class="grid cols3 dash3">
+  <div class="grid cols2 dash2 m2">
     <div class="card">
       <div class="hd"><h2>客户总览</h2><span class="pill" id="kpiActive">进行中</span></div>
       <div class="bd">
@@ -394,19 +416,6 @@
           </div>
         </div>
         <div class="small muted" style="margin-top:10px">点击某一类型可跳转到客户列表并自动筛选。</div>
-      </div>
-    </div>
-
-<div class="card">
-      <div class="hd"><h2>执行进度</h2><span class="pill">平均完成度</span></div>
-      <div class="bd">
-        <div class="progress"><div class="bar" id="avgBar"></div></div>
-        <div class="row" style="margin-top:10px">
-          <span class="pill">平均：<b id="avgPct">0%</b></span>
-          <span class="pill">逾期提醒：<b id="overdueCount">0</b></span>
-        </div>
-        <div class="sep"></div>
-        <div class="small">提示：给客户套用模板后，项目执行页会显示分阶段清单与进度条。</div>
       </div>
     </div>
 
@@ -961,17 +970,22 @@ if($('#kpiMonthOrders')) $('#kpiMonthOrders').textContent = monthCount;
 if($('#kpiReceivedSum')) $('#kpiReceivedSum').textContent = fmtMoney(receivedSum);
 if($('#kpiDueSum')) $('#kpiDueSum').textContent = fmtMoney(dueSum);
 
-    const avg = avgProgress();
-    $('#avgPct').textContent = avg + '%';
-    $('#avgBar').style.width = avg + '%';
+    const avgPctEl = $('#avgPct');
+    const avgBarEl = $('#avgBar');
+    const overdueEl = $('#overdueCount');
+    if(avgPctEl && avgBarEl && overdueEl){
+      const avg = avgProgress();
+      avgPctEl.textContent = avg + '%';
+      avgBarEl.style.width = avg + '%';
 
-    // overdue: date passed and not completed
-    const overdue = state.clients.filter(c=>{
-      if(!c.date) return false;
-      const d = new Date(c.date+'T00:00:00');
-      return d < new Date(now.toISOString().slice(0,10)+'T00:00:00') && c.status!=='completed';
-    }).length;
-    $('#overdueCount').textContent = overdue;
+      // overdue: date passed and not completed
+      const overdue = state.clients.filter(c=>{
+        if(!c.date) return false;
+        const d = new Date(c.date+'T00:00:00');
+        return d < new Date(now.toISOString().slice(0,10)+'T00:00:00') && c.status!=='completed';
+      }).length;
+      overdueEl.textContent = overdue;
+    }
 
     const active = state.clients.filter(c=> c.status==='in_progress' || c.status==='booked').length;
     $('#kpiActive').textContent = `进行中：${active}`;
